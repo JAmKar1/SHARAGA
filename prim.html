@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Техникум - Внутренний портал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Экран авторизации */
+        .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 3px solid #ddd;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .auth-tab.active {
+            border-bottom: 3px solid #283593;
+            color: #283593;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #283593;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .auth-button:hover {
+            background-color: #1a237e;
+        }
+
+        /* Основной интерфейс */
+        .main-interface {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Навигация */
+        .nav-container {
+            background-color: #3949ab;
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            padding: 0 20px;
+        }
+
+        .nav-tab {
+            padding: 15px 20px;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            border-bottom: 3px solid #ffeb3b;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Контент */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            min-height: 400px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h2 {
+            color: #283593;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Вкладки внутри Старосты */
+        .inner-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .inner-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .inner-tab.active {
+            border-bottom: 3px solid #3949ab;
+            font-weight: 600;
+            color: #3949ab;
+        }
+
+        /* Списки */
+        .list-item {
+            padding: 12px 15px;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* Курсы в расписании */
+        .course-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .course-tab {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .course-tab.active {
+            background-color: #3949ab;
+            color: white;
+        }
+
+        /* Мессенджер */
+        .messenger-container {
+            display: flex;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .contacts-list {
+            width: 30%;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .chat-area {
+            width: 70%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                padding: 0 10px;
+            }
+
+            .nav-tab {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .auth-container {
+                margin: 20px;
+                padding: 25px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран авторизации -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Вход</div>
+                <div class="auth-tab" id="registerTab">Регистрация</div>
+            </div>
+
+            <form class="auth-form active" id="loginForm">
+                <h2>Вход в систему</h2>
+                <div class="form-group">
+                    <label for="loginUsername">Логин или Email</label>
+                    <input type="text" id="loginUsername" placeholder="Введите логин" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите пароль" required>
+                </div>
+                <button type="button" class="auth-button" id="loginButton">Войти</button>
+            </form>
+
+            <form class="auth-form" id="registerForm">
+                <h2>Регистрация</h2>
+                <div class="form-group">
+                    <label for="regFullName">ФИО</label>
+                    <input type="text" id="regFullName" placeholder="Введите ФИО" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" placeholder="Введите email" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Пароль</label>
+                    <input type="password" id="regPassword" placeholder="Придумайте пароль" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Подтверждение пароля</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Повторите пароль" required>
+                </div>
+                <button type="button" class="auth-button" id="registerButton">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Основной интерфейс -->
+    <div class="main-interface" id="mainInterface">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="logo">Портал Техникума</div>
+            <div class="user-info">
+                <span id="currentUser">Иванов И.И. (Староста)</span>
+                <button class="logout-btn" id="logoutButton">Выйти</button>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="nav-container">
+            <ul class="nav-tabs" id="mainTabs">
+                <li class="nav-tab active" data-tab="headman">Староста</li>
+                <li class="nav-tab" data-tab="schedule">Расписание</li>
+                <li class="nav-tab" data-tab="tutoring">Репетиторство</li>
+                <li class="nav-tab" data-tab="events">Мероприятия</li>
+                <li class="nav-tab" data-tab="teachers">Список преподавателей</li>
+                <li class="nav-tab" data-tab="practice">Практика</li>
+                <li class="nav-tab" data-tab="support">Поддержка</li>
+            </ul>
+        </div>
+
+        <!-- Контент -->
+        <div class="content">
+            <!-- Вкладка Старосты -->
+            <div class="tab-content active" id="headman">
+                <h2>Панель старосты</h2>
+                <div class="inner-tabs">
+                    <div class="inner-tab active" data-inner-tab="students">Список студентов</div>
+                    <div class="inner-tab" data-inner-tab="reports">Отчеты</div>
+                    <div class="inner-tab" data-inner-tab="info">Информация для старосты</div>
+                </div>
+
+                <div class="inner-tab-content active" id="studentsContent">
+                    <h3>Список студентов группы ПИ-21</h3>
+                    <div class="list-item">
+                        <span>Иванов Иван Иванович</span>
+                        <span class="status-badge status-active">Активен</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Петров Петр Петрович</span>
+                        <span class="status-badge status-active">Активен</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Сидорова Анна Сергеевна</span>
+                        <span class="status-badge status-active">Активен</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Кузнецов Дмитрий Алексеевич</span>
+                        <span class="status-badge status-active">Активен</span>
+                    </div>
+                </div>
+
+                <div class="inner-tab-content" id="reportsContent">
+                    <h3>Отчеты по группе</h3>
+                    <div class="list-item">
+                        <span>Отчет по посещаемости за сентябрь</span>
+                        <span>12.10.2023</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Отчет по успеваемости</span>
+                        <span>05.10.2023</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Список студентов на стипендию</span>
+                        <span>28.09.2023</span>
+                    </div>
+                </div>
+
+                <div class="inner-tab-content" id="infoContent">
+                    <h3>Информация для старосты</h3>
+                    <p>• Собрание старост состоится 15 октября в 15:00 в актовом зале.</p>
+                    <p>• Необходимо собрать информацию о студентах, нуждающихся в общежитии.</p>
+                    <p>• До 20 октября сдать список студентов для участия в олимпиаде.</p>
+                    <p>• Обновить данные контактов студентов в системе.</p>
+                </div>
+            </div>
+
+            <!-- Вкладка Расписания -->
+            <div class="tab-content" id="schedule">
+                <h2>Расписание занятий</h2>
+                <div class="course-tabs">
+                    <div class="course-tab active" data-course="1">1 курс</div>
+                    <div class="course-tab" data-course="2">2 курс</div>
+                    <div class="course-tab" data-course="3">3 курс</div>
+                    <div class="course-tab" data-course="4">4 курс</div>
+                </div>
+                <div id="scheduleContent">
+                    <h3>Расписание для 1 курса (Понедельник)</h3>
+                    <p>09:00 - 10:30 - Математика (ауд. 301)</p>
+                    <p>10:45 - 12:15 - Информатика (ауд. 205)</p>
+                    <p>13:00 - 14:30 - Физика (ауд. 410)</p>
+                    <p>14:45 - 16:15 - История (ауд. 105)</p>
+                </div>
+            </div>
+
+            <!-- Вкладка Репетиторства -->
+            <div class="tab-content" id="tutoring">
+                <h2>Репетиторство по специальностям</h2>
+                <div class="list-item">
+                    <span>Программирование</span>
+                    <span>Преподаватель: Сидоров А.В.</span>
+                </div>
+                <div class="list-item">
+                    <span>Математический анализ</span>
+                    <span>Преподаватель: Петрова М.И.</span>
+                </div>
+                <div class="list-item">
+                    <span>Базы данных</span>
+                    <span>Преподаватель: Иванов С.П.</span>
+                </div>
+                <div class="list-item">
+                    <span>Веб-разработка</span>
+                    <span>Преподаватель: Козлов Д.Н.</span>
+                </div>
+            </div>
+
+            <!-- Вкладка Мероприятий -->
+            <div class="tab-content" id="events">
+                <h2>Мероприятия техникума</h2>
+                <div class="list-item">
+                    <span>День открытых дверей</span>
+                    <span>25 октября 2023</span>
+                </div>
+                <div class="list-item">
+                    <span>Олимпиада по программированию</span>
+                    <span>30 октября 2023</span>
+                </div>
+                <div class="list-item">
+                    <span>Спортивные соревнования</span>
+                    <span>5 ноября 2023</span>
+                </div>
+                <div class="list-item">
+                    <span>Научная конференция</span>
+                    <span>15 ноября 2023</span>
+                </div>
+            </div>
+
+            <!-- Вкладка Преподавателей -->
+            <div class="tab-content" id="teachers">
+                <h2>Список преподавателей</h2>
+                <div class="inner-tabs">
+                    <div class="inner-tab active" data-inner-tab="teachersList">Преподаватели</div>
+                    <div class="inner-tab" data-inner-tab="messenger">Мессенджер</div>
+                </div>
+
+                <div class="inner-tab-content active" id="teachersListContent">
+                    <div class="list-item">
+                        <span>Иванов Сергей Петрович</span>
+                        <span>Программирование</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Петрова Мария Ивановна</span>
+                        <span>Математика</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Сидоров Александр Васильевич</span>
+                        <span>Базы данных</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Козлова Елена Николаевна</span>
+                        <span>Веб-дизайн</span>
+                    </div>
+                </div>
+
+                <div class="inner-tab-content" id="messengerContent">
+                    <h3>Мессенджер</h3>
+                    <div class="messenger-container">
+                        <div class="contacts-list">
+                            <div class="list-item">Иванов С.П.</div>
+                            <div class="list-item">Петрова М.И.</div>
+                            <div class="list-item">Сидоров А.В.</div>
+                        </div>
+                        <div class="chat-area">
+                            <textarea class="message-input" placeholder="Введите сообщение..."></textarea>
+                            <button class="auth-button">Отправить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка Практики -->
+            <div class="tab-content" id="practice">
+                <h2>Практика студентов</h2>
+                <div class="list-item">
+                    <span>Предприятие: ООО "ТехноСофт"</span>
+                    <span>Куратор: Сидоров А.В.</span>
+                </div>
+                <div class="list-item">
+                    <span>Предприятие: АО "ИнфоТех"</span>
+                    <span>Куратор: Иванов С.П.</span>
+                </div>
+                <div class="list-item">
+                    <span>Предприятие: ПАО "РосТех"</span>
+                    <span>Куратор: Петрова М.И.</span>
+                </div>
+            </div>
+
+            <!-- Вкладка Поддержки -->
+            <div class="tab-content" id="support">
+                <h2>Техническая поддержка</h2>
+                <p>Если у вас возникли проблемы с доступом или работой портала, обратитесь в техническую поддержку:</p>
+                <p>• Email: support@techportal.ru</p>
+                <p>• Телефон: +7 (XXX) XXX-XX-XX</p>
+                <p>• Кабинет: 101 (главный корпус)</p>
+                <p>• Часы работы: Пн-Пт с 9:00 до 18:00</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы интерфейса
+        const authScreen = document.getElementById('authScreen');
+        const mainInterface = document.getElementById('mainInterface');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginButton = document.getElementById('loginButton');
+        const registerButton = document.getElementById('registerButton');
+        const logoutButton = document.getElementById('logoutButton');
+        const mainTabs = document.querySelectorAll('.nav-tab');
+        const currentUserElement = document.getElementById('currentUser');
+
+        // Переключение между вкладками авторизации
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+
+        // Функция входа в систему
+        loginButton.addEventListener('click', () => {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (username && password) {
+                // В реальном приложении здесь была бы проверка на сервере
+                authScreen.style.display = 'none';
+                mainInterface.style.display = 'flex';
+                currentUserElement.textContent = `${username} (Староста)`;
+            } else {
+                alert('Пожалуйста, заполните все поля');
+            }
+        });
+
+        // Функция регистрации
+        registerButton.addEventListener('click', () => {
+            const fullName = document.getElementById('regFullName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (!fullName || !email || !password || !confirmPassword) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Пароли не совпадают');
+                return;
+            }
+
+            // В реальном приложении здесь была бы отправка данных на сервер
+            alert('Регистрация успешна! Теперь войдите в систему.');
+
+            // Переключение на вкладку входа
+            loginTab.click();
+            document.getElementById('loginUsername').value = email;
+            document.getElementById('loginPassword').value = password;
+        });
+
+        // Выход из системы
+        logoutButton.addEventListener('click', () => {
+            authScreen.style.display = 'flex';
+            mainInterface.style.display = 'none';
+
+            // Очистка полей форм
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('regFullName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regConfirmPassword').value = '';
+
+            // Возврат на вкладку входа
+            loginTab.click();
+        });
+
+        // Переключение основных вкладок
+        mainTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Удаление активного класса у всех вкладок
+                mainTabs.forEach(t => t.classList.remove('active'));
+
+                // Добавление активного класса текущей вкладке
+                tab.classList.add('active');
+
+                // Скрытие всего контента
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Показ контента текущей вкладки
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Переключение внутренних вкладок (староста)
+        document.querySelectorAll('.inner-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const parentTab = tab.closest('.tab-content');
+
+                // Удаление активного класса у всех вкладок внутри родителя
+                parentTab.querySelectorAll('.inner-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+
+                // Добавление активного класса текущей вкладке
+                tab.classList.add('active');
+
+                // Скрытие всего контента внутри родителя
+                parentTab.querySelectorAll('.inner-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Показ контента текущей вкладки
+                const tabId = tab.getAttribute('data-inner-tab');
+                parentTab.querySelector(`#${tabId}Content`).classList.add('active');
+            });
+        });
+
+        // Переключение курсов в расписании
+        document.querySelectorAll('.course-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Удаление активного класса у всех вкладок
+                document.querySelectorAll('.course-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+
+                // Добавление активного класса текущей вкладке
+                tab.classList.add('active');
+
+                // Обновление содержимого расписания
+                const course = tab.getAttribute('data-course');
+                const scheduleContent = document.getElementById('scheduleContent');
+
+                const schedules = {
+                    1: `<h3>Расписание для 1 курса (Понедельник)</h3>
+                        <p>09:00 - 10:30 - Математика (ауд. 301)</p>
+                        <p>10:45 - 12:15 - Информатика (ауд. 205)</p>
+                        <p>13:00 - 14:30 - Физика (ауд. 410)</p>
+                        <p>14:45 - 16:15 - История (ауд. 105)</p>`,
+                    2: `<h3>Расписание для 2 курса (Понедельник)</h3>
+                        <p>09:00 - 10:30 - Базы данных (ауд. 302)</p>
+                        <p>10:45 - 12:15 - Алгоритмы (ауд. 206)</p>
+                        <p>13:00 - 14:30 - Веб-разработка (ауд. 411)</p>
+                        <p>14:45 - 16:15 - Иностранный язык (ауд. 106)</p>`,
+                    3: `<h3>Расписание для 3 курса (Понедельник)</h3>
+                        <p>09:00 - 10:30 - Мобильная разработка (ауд. 303)</p>
+                        <p>10:45 - 12:15 - Тестирование ПО (ауд. 207)</p>
+                        <p>13:00 - 14:30 - Сети и коммуникации (ауд. 412)</p>
+                        <p>14:45 - 16:15 - Экономика (ауд. 107)</p>`,
+                    4: `<h3>Расписание для 4 курса (Понедельник)</h3>
+                        <p>09:00 - 10:30 - Дипломное проектирование (ауд. 304)</p>
+                        <p>10:45 - 12:15 - Проектный менеджмент (ауд. 208)</p>
+                        <p>13:00 - 14:30 - Карьера и трудоустройство (ауд. 413)</p>
+                        <p>14:45 - 16:15 - Консультации (ауд. 108)</p>`
+                };
+
+                scheduleContent.innerHTML = schedules[course];
+            });
+        });
+
+        // Имитация входа для демонстрации
+        // Удалите эту часть в реальном приложении
+        setTimeout(() => {
+            // Автоматический вход для демонстрации (закомментируйте эту строку в реальном приложении)
+            // loginButton.click();
+        }, 500);
+    </script>
+</body>
+</html>
