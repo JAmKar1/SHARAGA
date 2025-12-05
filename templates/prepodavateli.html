@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Техникум - Преподаватели</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Контент */
+        .content {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #283593;
+            margin-bottom: 10px;
+        }
+
+        /* Внутренние вкладки */
+        .inner-tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 0;
+        }
+
+        .inner-tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            border-right: 1px solid #eee;
+        }
+
+        .inner-tab.active {
+            background-color: white;
+            font-weight: 600;
+            color: #283593;
+        }
+
+        .tab-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            min-height: 500px;
+        }
+
+        /* Поиск и фильтры */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #283593;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Карточки преподавателей */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .teacher-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #283593;
+        }
+
+        .teacher-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #283593;
+            margin-bottom: 5px;
+        }
+
+        .teacher-position {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .teacher-info {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .teacher-info p {
+            margin: 5px 0;
+        }
+
+        /* Мессенджер */
+        .messenger-container {
+            display: flex;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .contacts-sidebar {
+            width: 30%;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .contact-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .contact-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .contact-item.active {
+            background-color: #e8eaf6;
+        }
+
+        .chat-area {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fafafa;
+        }
+
+        .message-input-area {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            background-color: #283593;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo">Список преподавателей</div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/starosta" class="nav-link">Староста</a>
+            <a href="/prepodavateli" class="nav-link active">Преподаватели</a>
+            <a href="/logout" class="back-btn">Выйти</a>
+        </div>
+    </div>
+
+    <!-- Контент -->
+    <div class="content">
+        <div class="page-header">
+            <h1>Преподавательский состав</h1>
+
+        </div>
+
+        <div class="inner-tabs">
+            <div class="inner-tab active" onclick="showTab('teachers')">Преподаватели</div>
+            <div class="inner-tab" onclick="showTab('messenger')">Мессенджер</div>
+        </div>
+
+        <div class="tab-content" id="teachersTab">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Поиск преподавателей..." id="searchInput">
+                <button class="search-button" onclick="searchTeachers()">Найти</button>
+            </div>
+
+            <div class="teachers-grid" id="teachersGrid">
+                {% for teacher in teachers %}
+                <div class="teacher-card">
+                    <div class="teacher-name">{{ teacher.name }}</div>
+                    <div class="teacher-position">{{ teacher.position }}</div>
+
+                    <div class="teacher-info">
+                        <p><strong>Кафедра:</strong> {{ teacher.department }}</p>
+                        <p><strong>Предметы:</strong> {{ teacher.subjects|join(', ') }}</p>
+                        <p><strong>Email:</strong> {{ teacher.email }}</p>
+                        <p><strong>Телефон:</strong> {{ teacher.phone }}</p>
+                        <p><strong>Кабинет:</strong> {{ teacher.room }}</p>
+                        <p><strong>Консультации:</strong> {{ teacher.consultation }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="messengerTab" style="display: none;">
+            <h2>Мессенджер для связи с преподавателями</h2>
+
+            <div class="messenger-container">
+                <div class="contacts-sidebar">
+                    <h3 style="padding: 15px; margin: 0;">Контакты</h3>
+                    <div class="contacts-list">
+                        {% for teacher in teachers %}
+                        <div class="contact-item" onclick="selectContact({{ teacher.id }})">
+                            {{ teacher.name }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="chat-area">
+                    <div class="messages-container" id="messagesContainer">
+                        <p>Выберите преподавателя для начала общения</p>
+                    </div>
+
+                    <div class="message-input-area">
+                        <input type="text" class="message-input" placeholder="Введите сообщение..." id="messageInput">
+                        <button class="send-button" onclick="sendMessage()">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+
+            // Убрать активный класс со всех вкладок
+            document.querySelectorAll('.inner-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранную вкладку
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+
+            // Добавить активный класс выбранной вкладке
+            event.target.classList.add('active');
+        }
+
+        function searchTeachers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const teacherCards = document.querySelectorAll('.teacher-card');
+
+            teacherCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function selectContact(teacherId) {
+            // Убрать активный класс у всех контактов
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Добавить активный класс выбранному контакту
+            event.target.classList.add('active');
+
+            // Загрузить историю сообщений (в реальном приложении - запрос к серверу)
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>Система:</strong> Вы начали разговор с преподавателем
+                </div>
+
+            `;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (message) {
+                const messagesContainer = document.getElementById('messagesContainer');
+                const newMessage = document.createElement('div');
+                newMessage.style.backgroundColor = '#e3f2fd';
+                newMessage.style.padding = '10px';
+                newMessage.style.borderRadius = '5px';
+                newMessage.style.marginBottom = '10px';
+                newMessage.innerHTML = `<strong>Вы:</strong> ${message}`;
+
+                messagesContainer.appendChild(newMessage);
+                input.value = '';
+
+                // Прокрутить вниз
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Имитация ответа (в реальном приложении - запрос к серверу)
+                setTimeout(() => {
+                    const response = document.createElement('div');
+                    response.style.backgroundColor = '#f5f5f5';
+                    response.style.padding = '10px';
+                    response.style.borderRadius = '5px';
+                    response.style.marginBottom = '10px';
+                    response.innerHTML = `<strong>Преподаватель:</strong> Сообщение получено. Отвечу в ближайшее время`;
+
+                    messagesContainer.appendChild(response);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
