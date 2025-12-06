@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Техникум - Регистрация</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #283593;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #283593;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .register-button:hover {
+            background-color: #1a237e;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #283593;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .additional-fields {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+
+        .field-group {
+            display: none;
+        }
+
+        .field-group.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Регистрация</h1>
+        <p class="subtitle">Создание нового аккаунта</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register">
+            <!-- Основные поля -->
+            <div class="form-group">
+                <label for="username">Логин *</label>
+                <input type="text" id="username" name="username" placeholder="Придумайте логин" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль *</label>
+                <input type="password" id="password" name="password" placeholder="Не менее 6 символов" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Подтвердите пароль *</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required>
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Полное имя *</label>
+                <input type="text" id="full_name" name="full_name" placeholder="Иванов Иван Иванович" required>
+            </div>
+
+            <div class="form-group">
+                <label for="user_type">Тип пользователя *</label>
+                <select id="user_type" name="user_type" required onchange="showAdditionalFields()">
+                    <option value="student">Студент</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="example@mail.ru">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67">
+            </div>
+
+            <!-- Дополнительные поля для студентов/старост -->
+            <div class="additional-fields" id="studentFields">
+                <div class="field-group active" id="studentGroup">
+                    <div class="form-group">
+                        <label for="group">Группа</label>
+                        <input type="text" id="group" name="group" placeholder="ПИ-21">
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Курс</label>
+                        <select id="course" name="course">
+                            <option value="1">1 курс</option>
+                            <option value="2">2 курс</option>
+                            <option value="3">3 курс</option>
+                            <option value="4">4 курс</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительные поля для преподавателей -->
+            <div class="additional-fields" id="teacherFields" style="display: none;">
+                <div class="field-group active" id="teacherGroup">
+                    <div class="form-group">
+                        <label for="department">Кафедра</label>
+                        <input type="text" id="department" name="department" placeholder="Программная инженерия">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Должность</label>
+                        <input type="text" id="position" name="position" placeholder="Преподаватель">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="register-button">Зарегистрироваться</button>
+        </form>
+
+        <div class="login-link">
+            Уже есть аккаунт? <a href="/login">Войти в систему</a>
+        </div>
+    </div>
+
+    <script>
+        function showAdditionalFields() {
+            const userType = document.getElementById('user_type').value;
+            const studentFields = document.getElementById('studentFields');
+            const teacherFields = document.getElementById('teacherFields');
+
+            if (userType === 'student' || userType === 'starosta') {
+                studentFields.style.display = 'block';
+                teacherFields.style.display = 'none';
+            } else if (userType === 'teacher') {
+                studentFields.style.display = 'none';
+                teacherFields.style.display = 'block';
+            } else {
+                studentFields.style.display = 'none';
+                teacherFields.style.display = 'none';
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', showAdditionalFields);
+    </script>
+</body>
+</html>

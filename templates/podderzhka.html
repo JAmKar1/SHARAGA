@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка - Техникум</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Навигация */
+        .nav-links {
+            background: white;
+            padding: 12px 30px;
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .nav-link {
+            color: #555;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: #f0f0f0;
+            color: #283593;
+        }
+
+        .nav-link.active {
+            background-color: #283593;
+            color: white;
+        }
+
+        /* Контент */
+        .content {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Заголовок */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .page-title h1 {
+            color: #283593;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* Основной контент */
+        .support-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .support-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .support-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            color: #283593;
+            margin-bottom: 15px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 28px;
+        }
+
+        .section-text {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .contact-item {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-item i {
+            color: #283593;
+            font-size: 18px;
+        }
+
+        /* Социальные сети */
+        .social-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .social-title {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .social-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 220px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .social-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: #283593;
+        }
+
+        .social-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .social-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #283593;
+            margin-bottom: 8px;
+        }
+
+        .social-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Цвета для соцсетей */
+        .vk-card:hover .social-icon { color: #4C75A3; }
+        .tg-card:hover .social-icon { color: #0088cc; }
+        .email-card:hover .social-icon { color: #EA4335; }
+        .phone-card:hover .social-icon { color: #34A853; }
+        .whatsapp-card:hover .social-icon { color: #25D366; }
+        .site-card:hover .social-icon { color: #283593; }
+
+        /* FAQ секция */
+        .faq-item {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #283593;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .faq-answer {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Информация о технической поддержке */
+        .tech-support {
+            background: linear-gradient(135deg, #283593 0%, #1a237e 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .tech-support h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .tech-support p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .support-hotline {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffd700;
+            margin: 15px 0;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .social-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .social-card {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .support-hotline {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 0 15px;
+            }
+            
+            .support-content {
+                padding: 20px;
+            }
+            
+            .page-title h1 {
+                font-size: 26px;
+            }
+        }
+
+        /* Уведомления */
+        .flash-messages {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+    <!-- Иконочный шрифт -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo">Портал Техникума</div>
+        <div class="user-info">
+            <a href="/logout" class="logout-btn">Выйти</a>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <div class="nav-links">
+        <a href="/" class="nav-link">Главная</a>
+        <a href="/profile" class="nav-link">Профиль</a>
+        {% if user.user_type == 'admin' %}
+            <a href="/users" class="nav-link">Пользователи</a>
+            <a href="/admin/create_user" class="nav-link">Создать пользователя</a>
+        {% endif %}
+        <a href="/podderzhka" class="nav-link active">Поддержка</a>
+    </div>
+
+    <!-- Контент -->
+    <div class="content">
+        <!-- Уведомления -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'error' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Заголовок -->
+        <div class="page-title">
+            <h1><i class="fas fa-headset"></i> Служба поддержки</h1>
+            <p>Мы всегда готовы помочь вам с любыми вопросами</p>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="support-content">
+            <!-- Техническая поддержка -->
+            <div class="support-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🛠️</span>
+                    Техническая поддержка
+                </h2>
+                <p class="section-text">
+                    Наша команда технической поддержки работает круглосуточно, чтобы обеспечить 
+                    бесперебойную работу портала и помочь вам с любыми техническими вопросами.
+                </p>
+                
+                <div class="tech-support">
+                    <h3>Горячая линия технической поддержки</h3>
+                    <p>Работаем 24/7 для решения ваших проблем</p>
+                    <div class="support-hotline">
+                        <i class="fas fa-phone-alt"></i> +7 (495) 123-45-67
+                    </div>
+                    <p>Или напишите нам: <strong>support@technikum.ru</strong></p>
+                </div>
+            </div>
+
+            <!-- Контакты -->
+            <div class="support-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📞</span>
+                    Основные контакты
+                </h2>
+                <ul class="contact-list">
+                    <li class="contact-item">
+                        <i class="fas fa-user-tie"></i>
+                        <strong>Директор:</strong> Иванов Иван Иванович
+                    </li>
+                    <li class="contact-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <strong>Завуч по учебной работе:</strong> Петрова Мария Сергеевна
+                    </li>
+                    <li class="contact-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <strong>Завуч по воспитательной работе:</strong> Сидоров Алексей Петрович
+                    </li>
+                    <li class="contact-item">
+                        <i class="fas fa-desktop"></i>
+                        <strong>Системный администратор:</strong> Козлов Дмитрий Владимирович
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Часто задаваемые вопросы -->
+            <div class="support-section">
+                <h2 class="section-title">
+                    <span class="section-icon">❓</span>
+                    Часто задаваемые вопросы
+                </h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Как восстановить пароль от портала?</div>
+                    <div class="faq-answer">
+                        Обратитесь к системному администратору или отправьте запрос на почту 
+                        support@technikum.ru с указанием вашего логина и полного имени.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Не могу войти в систему. Что делать?</div>
+                    <div class="faq-answer">
+                        Проверьте правильность ввода логина и пароля. Если проблема не решена, 
+                        свяжитесь с технической поддержкой по телефону горячей линии.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Как изменить данные профиля?</div>
+                    <div class="faq-answer">
+                        Перейдите в раздел "Профиль" в верхнем меню. Для изменения основных данных 
+                        обратитесь к администратору системы.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Где найти расписание занятий?</div>
+                    <div class="faq-answer">
+                        Расписание доступно в разделе "Расписание" на главной странице. 
+                        Выберите нужный курс для просмотра.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Социальные сети и контакты -->
+            <div class="social-section">
+                <h2 class="social-title">Свяжитесь с нами</h2>
+                <p>Выберите удобный способ связи</p>
+                
+                <div class="social-grid">
+                    <!-- ВКонтакте -->
+                    <a href="https://vk.com/jamkar" target="_blank" class="social-card vk-card">
+                        <div class="social-icon"><i class="fab fa-vk"></i></div>
+                        <div class="social-name">ВКонтакте</div>
+                        <div class="social-desc">Наша официальная группа ВК. Новости, мероприятия, общение</div>
+                    </a>
+
+                    <!-- Telegram -->
+                    <a href="https://t.me/ArtemiyVadimch_V" target="_blank" class="social-card tg-card">
+                        <div class="social-icon"><i class="fab fa-telegram"></i></div>
+                        <div class="social-name">Telegram</div>
+                        <div class="social-desc">Быстрые уведомления и оперативная связь</div>
+                    </a>
+
+                    <!-- Официальный сайт -->
+                    <a href="https://koopteh.ru/" target="_blank" class="social-card site-card">
+                        <div class="social-icon"><i class="fas fa-globe"></i></div>
+                        <div class="social-name">Официальный сайт</div>
+                        <div class="social-desc">Полная информация о техникуме</div>
+                    </a>
+                </div>
+            </div>
+
+                    
+
+            <div class="support-section" style="text-align: left;">
+    <h2 class="section-title">
+        <span class="section-icon">🕒</span>
+        График работы
+    </h2>
+    <p class="section-text" style="text-align: left;">
+        <strong>Приемная директора:</strong> Пн-Пт: 9:00-18:00, Сб: 9:00-14:00<br>
+        <strong>Учебная часть:</strong> Пн-Пт: 8:30-17:30<br>
+        <strong>Техподдержка портала:</strong> Круглосуточно<br>
+        <strong>Адрес:</strong> г. Москва, ул. Студенческая, д. 15<br>
+        <strong>Email для общих вопросов:</strong> info@technikum.ru
+    </p>
+</div>
+
+    <!-- JavaScript для уведомлений -->
+    <script>
+        // Автоматическое скрытие уведомлений через 5 секунд
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease, height 0.5s ease';
+                alert.style.opacity = '0';
+                alert.style.height = '0';
+                alert.style.margin = '0';
+                alert.style.padding = '0';
+                alert.style.border = 'none';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Анимация при наведении на карточки
+        document.querySelectorAll('.social-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои репетиторства</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: #283593;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .section-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #283593;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tutoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .tutoring-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #283593;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tutoring-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tutoring-subject {
+            font-size: 20px;
+            font-weight: 600;
+            color: #283593;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tutoring-tutor {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .tutoring-info {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .tutoring-info p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .tutoring-info strong {
+            color: #333;
+            min-width: 120px;
+            display: inline-block;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px dashed #ddd;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-closed {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .status-full {
+            background-color: #FF9800;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-add {
+            background-color: #283593;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .btn-add:hover {
+            background-color: #1a237e;
+        }
+
+        .students-list {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .students-list h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-status {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .status-pending {
+            background-color: #FFC107;
+            color: #333;
+        }
+
+        .status-confirmed {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .tutoring-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Мои репетиторства</div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/repetitorstvo" class="nav-link">Репетиторство</a>
+            <a href="/repetitorstvo/my" class="nav-link active">Мои репетиторства</a>
+            <a href="/logout" class="back-btn">Выйти</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="page-header">
+            <h1>Мои репетиторства</h1>
+            <p>Здесь отображаются все репетиторства, которые вы создали</p>
+        </div>
+
+        
+
+       
+
+        <!-- Мои репетиторства -->
+        <div class="section-container">
+            <h2 class="section-title">📚 Мои репетиторства ({{ my_tutoring|length }})</h2>
+            
+            {% if my_tutoring and my_tutoring|length > 0 %}
+            <div class="tutoring-grid">
+                {% for item in my_tutoring %}
+                <div class="tutoring-card">
+                    <div class="tutoring-subject">
+                        {{ item.subject }}
+                        <span class="status-badge status-{{ 'open' if item.status == 'Идет набор' else 'closed' }}">
+                            {{ item.status }}
+                        </span>
+                    </div>
+                    
+                    <div class="tutoring-tutor">
+                        <strong>Вы:</strong> {{ item.tutor_name }}
+                        {% if item.tutor_type == 'student' %}
+                        <span style="color: #4CAF50; font-size: 12px;">(студент)</span>
+                        {% else %}
+                        <span style="color: #2196F3; font-size: 12px;">(преподаватель)</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="tutoring-info">
+                        <p><strong>📅 Дни:</strong> {{ item.days }}</p>
+                        <p><strong>🕐 Время:</strong> {{ item.time }}</p>
+                        <p><strong>🚪 Место:</strong> {{ item.room }}</p>
+                        <p><strong>💰 Стоимость:</strong> {{ item.price }}</p>
+                        <p><strong>👥 Записано:</strong> {{ item.registered_count }}/{{ item.max_students }}</p>
+                        <p><strong>📝 Статус:</strong> {{ item.status }}</p>
+                        <p><strong>📅 Создано:</strong> {{ item.created_at[:10] if item.created_at else 'Не указано' }}</p>
+                        
+                        {% if item.description %}
+                        <p><strong>📋 Описание:</strong> {{ item.description }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Список записавшихся студентов -->
+                    {% if item.students and item.students|length > 0 %}
+                    <div class="students-list">
+                        <h4>👥 Записались ({{ item.students|length }}):</h4>
+                        {% for student in item.students %}
+                        <div class="student-item">
+                            <span>{{ student.name }}</span>
+                            <span class="student-status status-{{ student.status }}">
+                                {{ student.status }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p style="color: #999; text-align: center; margin-top: 15px;">
+                        Пока никто не записался
+                    </p>
+                    {% endif %}
+
+                    <!-- Кнопки действий -->
+                    <div class="action-buttons">
+                        <a href="/repetitorstvo/delete/{{ item.id }}" 
+                           class="btn-delete"
+                           onclick="return confirm('Вы уверены, что хотите удалить это репетиторство?')">
+                            🗑️ Удалить
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-message">
+                <h3>📭 У вас пока нет репетиторств</h3>
+                <p>Создайте своё первое репетиторство, чтобы помогать другим студентам</p>
+                <a href="/repetitorstvo/add" class="btn-add" style="margin-top: 20px;">
+                    🎓 Стать репетитором
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Статистика -->
+        {% if my_tutoring and my_tutoring|length > 0 %}
+        <div class="section-container">
+            <h2 class="section-title">📊 Статистика</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 10px;">
+                    <div style="font-size: 32px; font-weight: bold; color: #283593;">
+                        {{ my_tutoring|length }}
+                    </div>
+                    <div style="color: #666;">Всего репетиторств</div>
+                </div>
+                
+                <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 10px;">
+                    <div style="font-size: 32px; font-weight: bold; color: #4CAF50;">
+                        {{ my_tutoring|selectattr('status', 'equalto', 'Идет набор')|list|length }}
+                    </div>
+                    <div style="color: #666;">Открыт набор</div>
+                </div>
+                
+                <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 10px;">
+                    <div style="font-size: 32px; font-weight: bold; color: #2196F3;">
+                        {% set total_students = 0 %}
+                        {% for item in my_tutoring %}
+                            {% set total_students = total_students + item.registered_count %}
+                        {% endfor %}
+                        {{ total_students }}
+                    </div>
+                    <div style="color: #666;">Всего записей</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Автоматическое скрытие уведомлений через 5 секунд
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Подсветка карточек при наведении
+        document.querySelectorAll('.tutoring-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание пользователя</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #283593;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .required::after {
+            content: " *";
+            color: #ff4444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #283593;
+            box-shadow: 0 0 0 2px rgba(40, 53, 147, 0.2);
+        }
+
+        .btn-primary {
+            background-color: #283593;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1a237e;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .field-group {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #283593;
+        }
+
+        .field-group.active {
+            display: block;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-note {
+            background-color: #f0f7ff;
+            border-left: 4px solid #4dabf7;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .form-note p {
+            margin: 5px 0;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Административная панель</div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/users" class="nav-link">Пользователи</a>
+            <a href="/admin/create_user" class="nav-link active">Создать пользователя</a>
+            <a href="/logout" class="back-btn">Выйти</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="page-header">
+            <h1>Создание нового пользователя</h1>
+            <p>Только администратор может создавать преподавателей, старост и других администраторов</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'error' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-note">
+            <p><strong>Информация:</strong></p>
+            <p>• Студенты могут регистрироваться самостоятельно через форму регистрации</p>
+            <p>• Администратор может создавать пользователей любых типов</p>
+            <p>• Поля с * обязательны для заполнения</p>
+        </div>
+
+        <div class="form-container">
+            <form method="POST" action="/admin/create_user" id="createUserForm" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="user_type" class="required">Тип пользователя</label>
+                    <select id="user_type" name="user_type" required onchange="toggleFields()">
+                        <option value="">Выберите тип</option>
+                        <option value="teacher">Преподаватель</option>
+                        <option value="starosta">Староста</option>
+                        <option value="admin">Администратор</option>
+                        <option value="student">Студент</option>
+                    </select>
+                    <div id="userTypeError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="required">Логин</label>
+                    <input type="text" id="username" name="username" required
+                           placeholder="Уникальный логин (латинские буквы и цифры)"
+                           pattern="[A-Za-z0-9_]+"
+                           title="Только латинские буквы, цифры и подчеркивание">
+                    <div id="usernameError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="required">Пароль</label>
+                    <input type="password" id="password" name="password" required
+                           placeholder="Не менее 6 символов"
+                           minlength="6">
+                    <div id="passwordError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_name" class="required">Полное имя</label>
+                    <input type="text" id="full_name" name="full_name" required
+                           placeholder="Иванов Иван Иванович">
+                    <div id="fullNameError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email"
+                           placeholder="example@mail.ru">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон</label>
+                    <input type="tel" id="phone" name="phone"
+                           placeholder="+7 (999) 123-45-67"
+                           pattern="\+7\s?[\(]?\d{3}[\)]?\s?\d{3}[\-]?\d{2}[\-]?\d{2}"
+                           title="Формат: +7 (999) 123-45-67">
+                </div>
+
+                <!-- Скрытое поле created_by -->
+                <input type="hidden" name="created_by" value="{{ session.username if session.username else 'admin' }}">
+
+                <!-- Поля для студентов/старост -->
+                <div id="studentFields" class="field-group">
+                    <div class="form-group">
+                        <label for="group">Группа</label>
+                        <input type="text" id="group" name="group"
+                               placeholder="ПИ-21"
+                               pattern="[А-ЯЁ]{2,4}-\d{2,3}"
+                               title="Формат: ПИ-21, ИВТ-202">
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Курс</label>
+                        <select id="course" name="course">
+                            <option value="">Выберите курс</option>
+                            {% for i in range(1, 7) %}
+                                <option value="{{ i }}">{{ i }} курс</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Поля для преподавателей -->
+                <div id="teacherFields" class="field-group">
+                    <div class="form-group">
+                        <label for="department">Кафедра</label>
+                        <input type="text" id="department" name="department"
+                               placeholder="Программная инженерия">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Должность</label>
+                        <input type="text" id="position" name="position"
+                               placeholder="Преподаватель">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                    <button type="submit" class="btn-primary">Создать пользователя</button>
+                    <a href="/users" class="btn-secondary">Назад к списку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleFields() {
+            const userType = document.getElementById('user_type').value;
+            const studentFields = document.getElementById('studentFields');
+            const teacherFields = document.getElementById('teacherFields');
+            const groupInput = document.getElementById('group');
+            const courseSelect = document.getElementById('course');
+
+            // Скрываем все поля
+            studentFields.classList.remove('active');
+            teacherFields.classList.remove('active');
+
+            // Сбрасываем обязательность полей
+            groupInput.required = false;
+            courseSelect.required = false;
+
+            // Показываем нужные поля
+            if (userType === 'student' || userType === 'starosta') {
+                studentFields.classList.add('active');
+                // Делаем поля обязательными
+                if (userType === 'starosta') {
+                    groupInput.required = true;
+                    courseSelect.required = true;
+                }
+            } else if (userType === 'teacher') {
+                teacherFields.classList.add('active');
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const userType = document.getElementById('user_type').value;
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            // Проверка типа пользователя
+            if (!userType) {
+                document.getElementById('userTypeError').textContent = 'Выберите тип пользователя';
+                document.getElementById('userTypeError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Проверка логина
+            const username = document.getElementById('username').value;
+            if (!username.match(/^[A-Za-z0-9_]+$/)) {
+                document.getElementById('usernameError').textContent = 'Логин может содержать только латинские буквы, цифры и подчеркивание';
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Проверка пароля
+            const password = document.getElementById('password').value;
+            if (password.length < 6) {
+                document.getElementById('passwordError').textContent = 'Пароль должен быть не менее 6 символов';
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Проверка имени
+            const fullName = document.getElementById('full_name').value;
+            if (!fullName.trim()) {
+                document.getElementById('fullNameError').textContent = 'Введите полное имя';
+                document.getElementById('fullNameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Дополнительные проверки для старост
+            if (userType === 'starosta') {
+                const group = document.getElementById('group').value;
+                const course = document.getElementById('course').value;
+
+                if (!group) {
+                    alert('Для старосты необходимо указать группу');
+                    isValid = false;
+                }
+                if (!course) {
+                    alert('Для старосты необходимо указать курс');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleFields();
+        });
+    </script>
+</body>
+</html>
