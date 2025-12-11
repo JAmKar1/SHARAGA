@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практика | University Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .practice-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border-left: 4px solid;
+        }
+        .practice-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .practice-type {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .practice-course {
+            color: #ff9800;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .practice-info p {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        .company-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+        .company-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+        .company-list li:last-child {
+            border-bottom: none;
+        }
+        .company-list li i {
+            color: #ff9800;
+            margin-right: 8px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .status-active {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        .status-completed {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .status-planning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border-top: 4px solid #ff9800;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .stats-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #ff9800;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #dee2e6;
+        }
+        .nav-pills .nav-link {
+            color: #6c757d;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+        .info-label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .info-value {
+            color: #2c3e50;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .company-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #ff9800;
+        }
+        .company-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .company-details {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 1.5rem;
+                text-align: center;
+            }
+            .practice-card {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building"></i> Университет
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house"></i> Главная</a>
+                    </li>
+                    {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('starosta') }}"><i class="bi bi-star"></i> Староста</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}"><i class="bi bi-calendar-week"></i> Расписание</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('praktika') }}"><i class="bi bi-briefcase"></i> Практика</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('repetitorstvo') }}"><i class="bi bi-book"></i> Репетиторство</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ session.name }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="bi bi-person"></i> Мой профиль</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('my_tutoring') }}"><i class="bi bi-book"></i> Мои репетиторства</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Производственная практика</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 mb-3"><i class="bi bi-briefcase"></i> Производственная практика</h1>
+                    <p class="lead mb-0">Информация о практиках, партнерских предприятиях и организациях</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <div class="text-end">
+                            <div class="fw-bold">Очное отделение</div>
+                            <small class="text-light">Форма обучения</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ practice.current|length }}</div>
+                    <div class="stats-label">Текущие практики</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ practice.completed|length }}</div>
+                    <div class="stats-label">Завершенные практики</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        {% set total_students = 0 %}
+                        {% for item in practice.current %}
+                            {% set total_students = total_students + item.students %}
+                        {% endfor %}
+                        {% for item in practice.completed %}
+                            {% set total_students = total_students + item.students %}
+                        {% endfor %}
+                        {{ total_students }}
+                    </div>
+                    <div class="stats-label">Всего студентов</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        {{ (practice.current|length + practice.completed|length) }}
+                    </div>
+                    <div class="stats-label">Всего практик</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Текущие практики -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="bi bi-clock text-warning"></i> Текущие практики</h3>
+                {% if practice.current %}
+                <div class="row">
+                    {% for item in practice.current %}
+                    <div class="col-md-6 mb-3">
+                        <div class="practice-card" style="border-left-color: #ff9800;">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <div class="practice-type">{{ item.company }}</div>
+                                    <div class="practice-course">Студентов: {{ item.students }}</div>
+                                </div>
+                                <span class="status-badge status-active">Активна</span>
+                            </div>
+
+                            <div class="practice-info">
+                                <div class="info-label">Период практики:</div>
+                                <div class="info-value">{{ item.period }}</div>
+
+                                <div class="info-label">Статус:</div>
+                                <div class="info-value">Идет набор студентов</div>
+
+                                <div class="info-label">Описание:</div>
+                                <div class="info-value mb-3">
+                                    Производственная практика по направлению "Разработка программного обеспечения"
+                                </div>
+
+                                <div class="info-label">Требования к студентам:</div>
+                                <ul class="company-list">
+                                    <li><i class="bi bi-check-circle"></i> Знание Python/Java</li>
+                                    <li><i class="bi bi-check-circle"></i> Базовые знания SQL</li>
+                                    <li><i class="bi bi-check-circle"></i> Опыт работы с Git</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i> В данный момент нет текущих практик. Следите за обновлениями.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Завершенные практики -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="bi bi-check-circle text-success"></i> Завершенные практики</h3>
+                {% if practice.completed %}
+                <div class="row">
+                    {% for item in practice.completed %}
+                    <div class="col-md-6 mb-3">
+                        <div class="practice-card" style="border-left-color: #28a745;">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <div class="practice-type">{{ item.company }}</div>
+                                    <div class="practice-course">Студентов: {{ item.students }}</div>
+                                </div>
+                                <span class="status-badge status-completed">Завершена</span>
+                            </div>
+
+                            <div class="practice-info">
+                                <div class="info-label">Период практики:</div>
+                                <div class="info-value">{{ item.period }}</div>
+
+                                <div class="info-label">Результаты:</div>
+                                <div class="info-value mb-3">
+                                    Успешно защищены {{ item.students }} отчетов, средний балл - 4.5
+                                </div>
+
+                                <div class="info-label">Основные направления:</div>
+                                <ul class="company-list">
+                                    <li><i class="bi bi-code-slash"></i> Веб-разработка</li>
+                                    <li><i class="bi bi-database"></i> Работа с базами данных</li>
+                                    <li><i class="bi bi-phone"></i> Мобильная разработка</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Завершенные практики появятся после окончания текущих.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Партнерские предприятия -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="practice-card" style="border-left-color: #17a2b8;">
+                    <h3 class="mb-4"><i class="bi bi-building text-info"></i> Партнерские предприятия</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="company-card">
+                                <div class="company-name">ООО "Технологии Будущего"</div>
+                                <div class="company-details">
+                                    <p><i class="bi bi-geo-alt"></i> г. Москва, ул. Программистов, 15</p>
+                                    <p><i class="bi bi-phone"></i> +7 (495) 123-45-67</p>
+                                    <p><i class="bi bi-envelope"></i> hr@future-tech.ru</p>
+                                    <p><i class="bi bi-globe"></i> www.future-tech.ru</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="company-card">
+                                <div class="company-name">ПАО "Инновационный Банк"</div>
+                                <div class="company-details">
+                                    <p><i class="bi bi-geo-alt"></i> г. Москва, Ленинский проспект, 32</p>
+                                    <p><i class="bi bi-phone"></i> +7 (495) 987-65-43</p>
+                                    <p><i class="bi bi-envelope"></i> practice@innobank.ru</p>
+                                    <p><i class="bi bi-globe"></i> www.innobank.ru</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="company-card">
+                                <div class="company-name">ООО "Софт-Девелопмент"</div>
+                                <div class="company-details">
+                                    <p><i class="bi bi-geo-alt"></i> г. Москва, ул. Разработчиков, 8</p>
+                                    <p><i class="bi bi-phone"></i> +7 (495) 555-12-34</p>
+                                    <p><i class="bi bi-envelope"></i> info@softdev.ru</p>
+                                    <p><i class="bi bi-globe"></i> www.softdev.ru</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="company-card">
+                                <div class="company-name">АО "Телеком-Сервис"</div>
+                                <div class="company-details">
+                                    <p><i class="bi bi-geo-alt"></i> г. Москва, ул. Связистов, 25</p>
+                                    <p><i class="bi bi-phone"></i> +7 (495) 777-88-99</p>
+                                    <p><i class="bi bi-envelope"></i> career@telecom-service.ru</p>
+                                    <p><i class="bi bi-globe"></i> www.telecom-service.ru</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Полезная информация -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="practice-card" style="border-left-color: #6f42c1;">
+                    <h5 class="mb-3"><i class="bi bi-file-earmark-text text-purple"></i> Документы для практики</h5>
+                    <ul class="company-list">
+                        <li><i class="bi bi-file-pdf"></i> Положение о практике (скачать)</li>
+                        <li><i class="bi bi-file-word"></i> Шаблон дневника практики (скачать)</li>
+                        <li><i class="bi bi-file-word"></i> Шаблон отчета (скачать)</li>
+                        <li><i class="bi bi-file-pdf"></i> Требования к отчету (скачать)</li>
+                        <li><i class="bi bi-file-word"></i> Заявление на практику (скачать)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="practice-card" style="border-left-color: #20c997;">
+                    <h5 class="mb-3"><i class="bi bi-calendar-check text-teal"></i> Важные даты</h5>
+                    <ul class="company-list">
+                        <li><i class="bi bi-calendar-event"></i> <strong>15 ноября 2024</strong> - Завершение текущих практик</li>
+                        <li><i class="bi bi-calendar-event"></i> <strong>20 ноября 2024</strong> - Сдача отчетов по практике</li>
+                        <li><i class="bi bi-calendar-event"></i> <strong>25 ноября 2024</strong> - Защита отчетов</li>
+                        <li><i class="bi bi-calendar-event"></i> <strong>1 декабря 2024</strong> - Начало нового набора</li>
+                        <li><i class="bi bi-calendar-event"></i> <strong>10 декабря 2024</strong> - Встреча с партнерами</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="bi bi-building"></i> University Management System</h6>
+                    <p>Система управления университетом © 2024</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>
+                        <i class="bi bi-person"></i> <strong>{{ session.name }}</strong> |
+                        <i class="bi bi-shield-check"></i> <strong>{{ session.user_type }}</strong> |
+                        <i class="bi bi-briefcase"></i> <strong>Практика</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Автоматическое скрытие flash сообщений через 5 секунд
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | University Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .additional-fields {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .field-group {
+            display: none;
+        }
+
+        .field-group.active {
+            display: block;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 1.5rem;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .input-with-icon {
+            padding-right: 40px;
+        }
+
+        .form-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .form-divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background-color: #e9ecef;
+        }
+
+        .form-divider span {
+            background-color: white;
+            padding: 0 15px;
+            color: #6c757d;
+            position: relative;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="form-header">
+            <i class="bi bi-person-plus"></i>
+            <h1>Регистрация</h1>
+            <p class="subtitle">Создание нового аккаунта в системе</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register">
+            <!-- Основные поля -->
+            <div class="form-group">
+                <label for="username" class="required-field">Логин</label>
+                <div class="input-group">
+                    <input type="text" id="username" name="username" placeholder="Придумайте логин" required class="input-with-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="required-field">Пароль</label>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Не менее 6 символов" required class="input-with-icon">
+                    <i class="bi bi-lock"></i>
+                </div>
+                <div class="password-requirements">
+                    <i class="bi bi-info-circle"></i> Пароль должен содержать не менее 6 символов
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password" class="required-field">Подтвердите пароль</label>
+                <div class="input-group">
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required class="input-with-icon">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="full_name" class="required-field">Полное имя</label>
+                <div class="input-group">
+                    <input type="text" id="full_name" name="full_name" placeholder="Иванов Иван Иванович" required class="input-with-icon">
+                    <i class="bi bi-card-text"></i>
+                </div>
+            </div>
+
+            <div class="form-divider">
+                <span>Дополнительная информация</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="example@mail.ru" class="input-with-icon">
+                    <i class="bi bi-envelope"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <div class="input-group">
+                    <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" class="input-with-icon">
+                    <i class="bi bi-telephone"></i>
+                </div>
+            </div>
+
+            <!-- Дополнительные поля для студентов/старост -->
+            <div class="additional-fields" id="studentFields">
+                <div class="field-group active" id="studentGroup">
+                    <h4><i class="bi bi-mortarboard"></i> Учебная информация</h4>
+                    <div class="form-group">
+                        <label for="group">Группа</label>
+                        <div class="input-group">
+                            <input type="text" id="group" name="group" placeholder="ПИ-21" class="input-with-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Курс</label>
+                        <select id="course" name="course" class="input-with-icon">
+                            <option value="1">1 курс</option>
+                            <option value="2">2 курс</option>
+                            <option value="3">3 курс</option>
+                            <option value="4">4 курс</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительные поля для преподавателей -->
+            <div class="additional-fields" id="teacherFields" style="display: none;">
+                <div class="field-group active" id="teacherGroup">
+                    <h4><i class="bi bi-briefcase"></i> Рабочая информация</h4>
+                    <div class="form-group">
+                        <label for="department">Кафедра</label>
+                        <div class="input-group">
+                            <input type="text" id="department" name="department" placeholder="Программная инженерия" class="input-with-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Должность</label>
+                        <div class="input-group">
+                            <input type="text" id="position" name="position" placeholder="Преподаватель" class="input-with-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="register-button">
+                <i class="bi bi-person-plus"></i> Зарегистрироваться
+            </button>
+        </form>
+
+        <div class="login-link">
+            Уже есть аккаунт? <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Войти в систему</a>
+        </div>
+    </div>
+
+    <script>
+        function showAdditionalFields() {
+            const userType = document.getElementById('user_type').value;
+            const studentFields = document.getElementById('studentFields');
+            const teacherFields = document.getElementById('teacherFields');
+
+            if (userType === 'student' || userType === 'starosta') {
+                studentFields.style.display = 'block';
+                teacherFields.style.display = 'none';
+            } else if (userType === 'teacher') {
+                studentFields.style.display = 'none';
+                teacherFields.style.display = 'block';
+            } else {
+                studentFields.style.display = 'none';
+                teacherFields.style.display = 'none';
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            showAdditionalFields();
+
+            // Анимация полей формы
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

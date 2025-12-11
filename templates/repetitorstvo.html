@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Репетиторство | University Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .header-card {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .info-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #4CAF50;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tutoring-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        .tutoring-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+        .status-active {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        .status-completed {
+            background-color: #e8eaf6;
+            color: #3f51b5;
+        }
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #dee2e6;
+        }
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .subject-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+        .teacher-card {
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .student-card {
+            border: 2px solid #f3e5f5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content {
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building"></i> Университет
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house"></i> Главная</a>
+                    </li>
+                    {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('starosta') }}"><i class="bi bi-people"></i> Староста</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}"><i class="bi bi-calendar-week"></i> Расписание</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('repetitorstvo') }}"><i class="bi bi-book"></i> Репетиторство</a>
+                    </li>
+                    {% if session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}"><i class="bi bi-gear"></i> Админ-панель</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ session.name }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="bi bi-person"></i> Профиль</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('my_tutoring') }}"><i class="bi bi-book"></i> Мои репетиторства</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Репетиторство</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="header-card">
+            <div class="row align-items-center">
+                <div class="col-md-1 text-center mb-3 mb-md-0">
+                    <div class="profile-avatar" style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,0.3);">
+                        <i class="bi bi-book-half" style="font-size: 36px;"></i>
+                    </div>
+                </div>
+                <div class="col-md-11">
+                    <h1 class="display-6">📚 Система репетиторства</h1>
+                    <p class="lead mb-0">Платформа для организации индивидуальных занятий между преподавателями и студентами</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom alert-dismissible fade show mt-3" role="alert">
+                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Информационная карточка -->
+        <div class="info-card">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5><i class="bi bi-info-circle"></i> Как работает система репетиторства?</h5>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Преподаватели создают предложения репетиторства</p>
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Студенты выбирают подходящие предложения</p>
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Все занятия отслеживаются в системе</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Поддержка различных предметов и уровней</p>
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Гибкий график занятий</p>
+                            <p class="mb-1"><i class="bi bi-check-circle text-success"></i> Отзывы и рейтинги</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ tutoring_sessions|default('0', true)|length }}</div>
+                    <div class="stats-label">Всего занятий</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ available_tutors|default('0', true)|length }}</div>
+                    <div class="stats-label">Доступных репетиторов</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ subjects_count|default('5', true) }}</div>
+                    <div class="stats-label">Предметов</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ success_rate|default('95', true) }}%</div>
+                    <div class="stats-label">Успешных занятий</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="row">
+            <!-- Левая колонка - для преподавателей -->
+            {% if session.user_type == 'teacher' or session.user_type == 'admin' %}
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h4 class="mb-4"><i class="bi bi-person-badge text-success"></i> Для преподавателей</h4>
+
+                    <div class="info-card">
+                        <h5><i class="bi bi-lightning"></i> Быстрые действия</h5>
+                        <div class="row mt-3">
+                            <div class="col-6 mb-2">
+                                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#createTutoringModal">
+                                    <i class="bi bi-plus-circle"></i> Создать предложение
+                                </button>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a href="{{ url_for('my_tutoring') }}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-journal"></i> Мои занятия
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Предложения репетиторства -->
+                    <h5 class="mt-4 mb-3"><i class="bi bi-list-stars"></i> Активные предложения</h5>
+
+                    {% if tutoring_offers and tutoring_offers|length > 0 %}
+                        {% for offer in tutoring_offers %}
+                        <div class="teacher-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6>{{ offer.subject }}</h6>
+                                <span class="status-badge status-active">Активно</span>
+                            </div>
+                            <p class="text-muted">{{ offer.description|default('Описание отсутствует', true) }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small><i class="bi bi-currency-dollar"></i> {{ offer.price|default('Бесплатно', true) }}</small>
+                                    <small class="ms-3"><i class="bi bi-clock"></i> {{ offer.duration|default('60 мин', true) }}</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#editOfferModal{{ offer.id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Нет активных предложений репетиторства
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Правая колонка - для студентов -->
+            {% if session.user_type == 'student' or session.user_type == 'admin' %}
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h4 class="mb-4"><i class="bi bi-mortarboard text-primary"></i> Для студентов</h4>
+
+                    <div class="info-card">
+                        <h5><i class="bi bi-search"></i> Поиск репетитора</h5>
+                        <div class="input-group mt-3">
+                            <input type="text" class="form-control" placeholder="Введите предмет или тему...">
+                            <button class="btn btn-success" type="button">
+                                <i class="bi bi-search"></i> Поиск
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Доступные репетиторы -->
+                    <h5 class="mt-4 mb-3"><i class="bi bi-people"></i> Доступные репетиторы</h5>
+
+                    {% if available_tutors and available_tutors|length > 0 %}
+                        {% for tutor in available_tutors %}
+                        <div class="student-card">
+                            <div class="d-flex align-items-center mb-2">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 10px;">
+                                    {{ tutor.name[0] if tutor.name else '?' }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">{{ tutor.name|default('Репетитор', true) }}</h6>
+                                    <small class="text-muted">{{ tutor.subject|default('Предмет', true) }}</small>
+                                </div>
+                                <div class="ms-auto">
+                                    <span class="badge bg-success">{{ tutor.rating|default('5.0', true) }} ★</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div>
+                                    {% if tutor.subjects %}
+                                        {% for subject in tutor.subjects[:3] %}
+                                        <span class="subject-badge bg-light text-dark">{{ subject }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#bookTutorModal{{ tutor.id }}">
+                                    <i class="bi bi-calendar-plus"></i> Записаться
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Нет доступных репетиторов в данный момент
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Текущие занятия -->
+        {% if tutoring_sessions and tutoring_sessions|length > 0 %}
+        <div class="content-card mt-4">
+            <h4 class="mb-4"><i class="bi bi-calendar-check"></i> Текущие занятия</h4>
+
+            <div class="row">
+                {% for session in tutoring_sessions %}
+                <div class="col-md-6 mb-3">
+                    <div class="tutoring-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6>{{ session.subject|default('Занятие', true) }}</h6>
+                            <span class="status-badge
+                                {% if session.status == 'active' %}status-active
+                                {% elif session.status == 'pending' %}status-pending
+                                {% elif session.status == 'completed' %}status-completed
+                                {% else %}status-cancelled{% endif %}">
+                                {% if session.status == 'active' %}Активно
+                                {% elif session.status == 'pending' %}Ожидание
+                                {% elif session.status == 'completed' %}Завершено
+                                {% else %}Отменено{% endif %}
+                            </span>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <small><i class="bi bi-person"></i>
+                                    {% if session.teacher_name %}
+                                        {{ session.teacher_name }}
+                                    {% elif session.user_type == 'teacher' %}
+                                        Вы (преподаватель)
+                                    {% else %}
+                                        Репетитор
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small><i class="bi bi-person"></i>
+                                    {% if session.student_name %}
+                                        {{ session.student_name }}
+                                    {% elif session.user_type == 'student' %}
+                                        Вы (студент)
+                                    {% else %}
+                                        Студент
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <small><i class="bi bi-calendar"></i> {{ session.date|default('Не указана', true) }}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><i class="bi bi-clock"></i> {{ session.time|default('Не указано', true) }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                {% if session.user_type in ['teacher', 'admin'] and session.status == 'pending' %}
+                                <button class="btn btn-sm btn-success me-2">
+                                    <i class="bi bi-check"></i> Подтвердить
+                                </button>
+                                {% endif %}
+                                {% if session.user_type in ['student', 'admin'] and session.status == 'active' %}
+                                <button class="btn btn-sm btn-primary">
+                                    <i class="bi bi-chat"></i> Сообщение
+                                </button>
+                                {% endif %}
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sessionDetailsModal{{ session.id }}">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>University Management System</h6>
+                    <p>Система репетиторства © 2024</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>
+                        Пользователь: <strong>{{ session.name }}</strong> |
+                        Роль: <strong>{{ session.user_type }}</strong> |
+                        Статус: <strong>Активен</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальные окна -->
+    <!-- Модальное окно создания предложения -->
+    <div class="modal fade" id="createTutoringModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Создать предложение репетиторства</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createTutoringForm">
+                        <div class="mb-3">
+                            <label class="form-label">Предмет</label>
+                            <input type="text" class="form-control" placeholder="Например: Математика, Программирование" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" rows="3" placeholder="Опишите, чем вы можете помочь..."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Цена за час</label>
+                                <input type="number" class="form-control" placeholder="0 = бесплатно">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Длительность занятия</label>
+                                <select class="form-select">
+                                    <option>30 минут</option>
+                                    <option selected>60 минут</option>
+                                    <option>90 минут</option>
+                                    <option>120 минут</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Доступные дни</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="monday">
+                                <label class="form-check-label" for="monday">Понедельник</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tuesday">
+                                <label class="form-check-label" for="tuesday">Вторник</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="wednesday">
+                                <label class="form-check-label" for="wednesday">Среда</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary-custom" onclick="createTutoringOffer()">Создать предложение</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Автоматическое скрытие flash сообщений через 5 секунд
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
+        // Функция создания предложения репетиторства
+        function createTutoringOffer() {
+            const subject = document.querySelector('#createTutoringForm input[type="text"]').value;
+            const description = document.querySelector('#createTutoringForm textarea').value;
+            const price = document.querySelector('#createTutoringForm input[type="number"]').value;
+
+            if (!subject) {
+                alert('Пожалуйста, укажите предмет');
+                return;
+            }
+
+            // Здесь должен быть AJAX запрос к серверу
+            alert(`Предложение "${subject}" создано!`);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createTutoringModal'));
+            modal.hide();
+        }
+
+        // Функция записи к репетитору
+        function bookTutor(tutorId) {
+            // Здесь должен быть AJAX запрос к серверу
+            alert('Вы успешно записались на занятие!');
+        }
+    </script>
+</body>
+</html>

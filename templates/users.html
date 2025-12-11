@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи системы | University Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border-top: 4px solid;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .stats-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .user-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .admin-badge {
+            background-color: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+        }
+        .teacher-badge {
+            background-color: #e8f5e9;
+            color: #388e3c;
+            border: 1px solid #c8e6c9;
+        }
+        .starosta-badge {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+        .student-badge {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #e1bee7;
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .table-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .action-btn {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        .edit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            border: none;
+        }
+        .edit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+        .delete-btn {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            color: white;
+            border: none;
+        }
+        .delete-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
+        }
+        .add-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+            color: white;
+        }
+        .user-row:hover {
+            background-color: #f8f9fa !important;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        .empty-icon {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #dee2e6;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .table-responsive {
+            border-radius: 0 0 10px 10px;
+        }
+        .nav-pills .nav-link {
+            color: #6c757d;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 1.5rem;
+                text-align: center;
+            }
+            .stats-card {
+                margin-bottom: 15px;
+            }
+            .action-btn {
+                padding: 4px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building"></i> Университет
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house"></i> Главная</a>
+                    </li>
+                    {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('starosta') }}"><i class="bi bi-people"></i> Староста</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}"><i class="bi bi-calendar-week"></i> Расписание</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('repetitorstvo') }}"><i class="bi bi-book"></i> Репетиторство</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('users_list') }}"><i class="bi bi-people"></i> Пользователи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_create_user') }}"><i class="bi bi-person-plus"></i> Создать</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ session.name }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="bi bi-person"></i> Мой профиль</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('my_tutoring') }}"><i class="bi bi-book"></i> Мои репетиторства</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Пользователи системы</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 mb-3"><i class="bi bi-people"></i> Управление пользователями</h1>
+                    <p class="lead mb-0">Просмотр и управление зарегистрированными пользователями системы</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="{{ url_for('admin_create_user') }}" class="add-btn">
+                        <i class="bi bi-person-plus"></i> Создать пользователя
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row mb-4">
+            {% if users and users|length > 0 %}
+            {# Рассчитываем количество пользователей каждого типа #}
+            {% set admins = [] %}
+            {% set teachers = [] %}
+            {% set starostas = [] %}
+            {% set students = [] %}
+
+            {% for user in users %}
+                {% if user.user_type == 'admin' %}
+                    {% set _ = admins.append(user) %}
+                {% elif user.user_type == 'teacher' %}
+                    {% set _ = teachers.append(user) %}
+                {% elif user.user_type == 'starosta' %}
+                    {% set _ = starostas.append(user) %}
+                {% elif user.user_type == 'student' %}
+                    {% set _ = students.append(user) %}
+                {% endif %}
+            {% endfor %}
+
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card" style="border-top-color: #667eea;">
+                    <div class="stats-number text-primary">{{ users|length }}</div>
+                    <div class="stats-label">Всего пользователей</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card" style="border-top-color: #d32f2f;">
+                    <div class="stats-number text-danger">{{ admins|length }}</div>
+                    <div class="stats-label">Администраторов</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card" style="border-top-color: #388e3c;">
+                    <div class="stats-number text-success">{{ teachers|length }}</div>
+                    <div class="stats-label">Преподавателей</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card" style="border-top-color: #1976d2;">
+                    <div class="stats-number text-info">{{ starostas|length }}</div>
+                    <div class="stats-label">Старост</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Таблица пользователей -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="mb-0"><i class="bi bi-table"></i> Список пользователей</h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <span class="badge bg-light text-dark fs-6">
+                            {% if users %}{{ users|length }}{% else %}0{% endif %} записей
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {% if users and users|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="ps-4">#</th>
+                            <th scope="col">Пользователь</th>
+                            <th scope="col">Тип</th>
+                            <th scope="col">Доп. информация</th>
+                            <th scope="col">Дата регистрации</th>
+                            <th scope="col" class="text-center">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="user-row">
+                            <td class="ps-4 align-middle">
+                                <div class="user-avatar mx-auto">
+                                    {{ user.full_name[0] if user.full_name else '?' }}
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="fw-bold">{{ user.full_name }}</div>
+                                <small class="text-muted">@{{ user.username }}</small>
+                                {% if user.email %}
+                                <div><small><i class="bi bi-envelope"></i> {{ user.email }}</small></div>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">
+                                {% if user.user_type == 'admin' %}
+                                <span class="user-badge admin-badge">
+                                    <i class="bi bi-shield-check"></i> Администратор
+                                </span>
+                                {% elif user.user_type == 'teacher' %}
+                                <span class="user-badge teacher-badge">
+                                    <i class="bi bi-person-badge"></i> Преподаватель
+                                </span>
+                                {% elif user.user_type == 'starosta' %}
+                                <span class="user-badge starosta-badge">
+                                    <i class="bi bi-star"></i> Староста
+                                </span>
+                                {% elif user.user_type == 'student' %}
+                                <span class="user-badge student-badge">
+                                    <i class="bi bi-mortarboard"></i> Студент
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">
+                                {% if user.user_type in ['student', 'starosta'] %}
+                                <div><small><i class="bi bi-people"></i> Группа: {{ user.group_name or 'Не указана' }}</small></div>
+                                {% if user.course %}
+                                <div><small><i class="bi bi-123"></i> Курс: {{ user.course }}</small></div>
+                                {% endif %}
+                                {% elif user.user_type == 'teacher' %}
+                                <div><small><i class="bi bi-building"></i> {{ user.department or 'Не указана' }}</small></div>
+                                {% if user.position %}
+                                <div><small><i class="bi bi-briefcase"></i> {{ user.position }}</small></div>
+                                {% endif %}
+                                {% endif %}
+                                {% if user.phone %}
+                                <div><small><i class="bi bi-telephone"></i> {{ user.phone }}</small></div>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">
+                                <small>
+                                    {% if user.created_at %}
+                                    <i class="bi bi-calendar"></i> {{ user.created_at[:10] if user.created_at is string else user.created_at }}
+                                    {% if user.created_at is string and user.created_at|length > 10 %}
+                                    <div><small class="text-muted">{{ user.created_at[11:16] }}</small></div>
+                                    {% endif %}
+                                    {% else %}
+                                    Неизвестно
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn edit-btn action-btn">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </a>
+                                    {% if session.user_id != user.id %}
+                                    <form action="{{ url_for('delete_user_route', user_id=user.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn delete-btn action-btn"
+                                                onclick="return confirm('Вы уверены, что хотите удалить пользователя {{ user.full_name }}?')">
+                                            <i class="bi bi-trash"></i> Удалить
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h4 class="mb-3">Нет зарегистрированных пользователей</h4>
+                <p class="mb-4">В системе пока нет пользователей. Создайте первого пользователя для начала работы.</p>
+                <a href="{{ url_for('admin_create_user') }}" class="add-btn">
+                    <i class="bi bi-person-plus"></i> Создать первого пользователя
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Дополнительная статистика -->
+        {% if users and users|length > 0 %}
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="stats-card">
+                    <h5 class="mb-3"><i class="bi bi-graph-up"></i> Распределение по типам</h5>
+                    <div class="d-flex flex-column gap-2">
+                        {% set total = users|length %}
+                        {% set admin_count = admins|length %}
+                        {% set teacher_count = teachers|length %}
+                        {% set starosta_count = starostas|length %}
+                        {% set student_count = students|length %}
+
+                        {% set admin_percent = (admin_count / total * 100)|round(1) if total > 0 else 0 %}
+                        {% set teacher_percent = (teacher_count / total * 100)|round(1) if total > 0 else 0 %}
+                        {% set starosta_percent = (starosta_count / total * 100)|round(1) if total > 0 else 0 %}
+                        {% set student_percent = (student_count / total * 100)|round(1) if total > 0 else 0 %}
+
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Администраторы</span>
+                                <span>{{ admin_count }} ({{ admin_percent }}%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-danger" style="width: {{ admin_percent }}%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Преподаватели</span>
+                                <span>{{ teacher_count }} ({{ teacher_percent }}%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: {{ teacher_percent }}%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Старосты</span>
+                                <span>{{ starosta_count }} ({{ starosta_percent }}%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" style="width: {{ starosta_percent }}%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Студенты</span>
+                                <span>{{ student_count }} ({{ student_percent }}%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" style="background-color: #7b1fa2; width: {{ student_percent }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="stats-card">
+                    <h5 class="mb-3"><i class="bi bi-info-circle"></i> Информация о системе</h5>
+                    <div class="d-flex flex-column gap-3">
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <span>Всего записей:</span>
+                                <strong>{{ users|length }}</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <span>Последняя запись:</span>
+                                <strong>
+                                    {% if users[-1] and users[-1].created_at %}
+                                        {% if users[-1].created_at is string %}
+                                            {{ users[-1].created_at[:10] }}
+                                        {% else %}
+                                            {{ users[-1].created_at }}
+                                        {% endif %}
+                                    {% else %}
+                                    Неизвестно
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <span>Текущий пользователь:</span>
+                                <strong>{{ session.name }}</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <span>Ваша роль:</span>
+                                <strong>
+                                    {% if session.user_type == 'admin' %}
+                                    <span class="badge bg-danger">Администратор</span>
+                                    {% elif session.user_type == 'teacher' %}
+                                    <span class="badge bg-success">Преподаватель</span>
+                                    {% elif session.user_type == 'starosta' %}
+                                    <span class="badge bg-info">Староста</span>
+                                    {% elif session.user_type == 'student' %}
+                                    <span class="badge" style="background-color: #7b1fa2;">Студент</span>
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="bi bi-building"></i> University Management System</h6>
+                    <p>Система управления университетом © 2024</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>
+                        <i class="bi bi-person"></i> <strong>{{ session.name }}</strong> |
+                        <i class="bi bi-shield-check"></i> <strong>{{ session.user_type }}</strong> |
+                        <i class="bi bi-hash"></i> <strong>{{ session.user_id }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Автоматическое скрытие flash сообщений через 5 секунд
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            // Подтверждение удаления
+            const deleteForms = document.querySelectorAll('form[action*="delete_user"]');
+            deleteForms.forEach(form => {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.addEventListener('click', function(e) {
+                        if (!confirm('Вы уверены, что хотите удалить этого пользователя? Это действие необратимо.')) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Техникум - Добавить репетиторство</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Контент */
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #283593;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Контейнер формы */
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #283593;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Поля формы */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #283593;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #283593;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        /* Кнопки */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #283593 0%, #1a237e 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 53, 147, 0.3);
+        }
+
+        .btn-cancel {
+            background-color: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Хлебные крошки */
+        .breadcrumbs {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumbs a {
+            color: #283593;
+            text-decoration: none;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        /* Информационный блок */
+        .info-box {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #283593;
+        }
+
+        .info-box h3 {
+            color: #283593;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-box ul {
+            padding-left: 20px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        /* Подсказки */
+        .form-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Обязательные поля */
+        .required::after {
+            content: " *";
+            color: #f44336;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 15px;
+            }
+
+            .form-input {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo">Техникум - Добавить репетиторство</div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="nav-link">Главная</a>
+            {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+            <a href="{{ url_for('starosta') }}" class="nav-link">Староста</a>
+            {% endif %}
+            <a href="{{ url_for('raspisanie') }}" class="nav-link">Расписание</a>
+            <a href="{{ url_for('repetitorstvo') }}" class="nav-link active">Репетиторство</a>
+            <a href="{{ url_for('users_list') }}" class="nav-link">Пользователи</a>
+
+            <div class="user-menu">
+                <span class="user-name">{{ session.name }}</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Выйти</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контент -->
+    <div class="content">
+        <!-- Хлебные крошки -->
+        <div class="breadcrumbs">
+            <a href="{{ url_for('home') }}">Главная</a> /
+            <a href="{{ url_for('repetitorstvo') }}">Репетиторство</a> /
+            Добавить репетиторство
+        </div>
+
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <h1>➕ Добавить репетиторство</h1>
+            <p>Создайте новое репетиторство для помощи студентам</p>
+        </div>
+
+        <!-- Форма создания репетиторства -->
+        <div class="form-container">
+            <h2 class="section-title">📝 Заполните информацию о репетиторстве</h2>
+
+            <form method="POST" action="/repetitorstvo/add">
+                <!-- Предмет -->
+                <div class="form-group">
+                    <label for="subject" class="form-label required">Предмет</label>
+                    <input type="text" id="subject" name="subject" class="form-input"
+                           placeholder="Введите название предмета" required>
+                    <div class="form-hint">Например: Математика, Физика, Программирование</div>
+                </div>
+
+                <!-- Описание -->
+                <div class="form-group">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea id="description" name="description" class="form-input"
+                              placeholder="Опишите содержание занятий, формат и цели"></textarea>
+                    <div class="form-hint">Расскажите, что будут изучать студенты на ваших занятиях</div>
+                </div>
+
+                <!-- Дни занятий -->
+                <div class="form-group">
+                    <label for="days" class="form-label required">Дни занятий</label>
+                    <input type="text" id="days" name="days" class="form-input"
+                           placeholder="Например: Пн, Ср, Пт или Вт, Чт" required>
+                    <div class="form-hint">Укажите дни недели, когда будут проходить занятия</div>
+                </div>
+
+                <!-- Время -->
+                <div class="form-group">
+                    <label for="time" class="form-label required">Время</label>
+                    <input type="text" id="time" name="time" class="form-input"
+                           placeholder="Например: 15:00-17:00" required>
+                    <div class="form-hint">Укажите время начала и окончания занятий</div>
+                </div>
+
+                <!-- Место проведения -->
+                <div class="form-group">
+                    <label for="room" class="form-label required">Аудитория/место</label>
+                    <input type="text" id="room" name="room" class="form-input"
+                           placeholder="Например: 302 или Библиотека" required>
+                    <div class="form-hint">Где будут проходить занятия?</div>
+                </div>
+
+                <!-- Стоимость -->
+                <div class="form-group">
+                    <label for="price" class="form-label required">Стоимость</label>
+                    <input type="text" id="price" name="price" class="form-input"
+                           placeholder="Например: Бесплатно или 500 руб/час" required>
+                    <div class="form-hint">Укажите стоимость занятий или напишите "Бесплатно"</div>
+                </div>
+
+                <!-- Количество мест -->
+                <div class="form-group">
+                    <label for="max_students" class="form-label">Максимум студентов</label>
+                    <input type="number" id="max_students" name="max_students"
+                           class="form-input" value="10" min="1" max="50">
+                    <div class="form-hint">Сколько студентов могут записаться на ваше репетиторство</div>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">
+                        ✅ Создать репетиторство
+                    </button>
+                    <a href="{{ url_for('repetitorstvo') }}" class="btn btn-cancel">
+                        ↩️ Назад к списку
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Информационный блок -->
+        <div class="info-box">
+            <h3>ℹ️ Полезная информация</h3>
+            <ul>
+                <li>Все поля, отмеченные <span style="color: #f44336;">*</span>, обязательны для заполнения</li>
+                <li>После создания репетиторства студенты смогут записываться на него</li>
+                <li>Вы сможете управлять списком записавшихся студентов в разделе "Мои репетиторства"</li>
+                <li>Рекомендуем указывать точное время и место проведения занятий</li>
+            </ul>
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                💡 <strong>Совет:</strong> Добавьте подробное описание, чтобы привлечь больше студентов
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Автоматическое скрытие уведомлений через 5 секунд
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                });
+            }, 5000);
+
+            // Подсветка обязательных полей при фокусе
+            const requiredInputs = document.querySelectorAll('input[required], textarea[required]');
+            requiredInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#283593';
+                    this.style.boxShadow = '0 0 0 3px rgba(40, 53, 147, 0.2)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = this.value ? '#4CAF50' : '#ddd';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Подтверждение отмены
+            const cancelBtn = document.querySelector('.btn-cancel');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function(e) {
+                    if (formHasChanges()) {
+                        if (!confirm('У вас есть несохраненные изменения. Вы уверены, что хотите выйти?')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+            // Проверка изменений в форме
+            function formHasChanges() {
+                const form = document.querySelector('form');
+                const inputs = form.querySelectorAll('input, textarea');
+
+                for (let input of inputs) {
+                    if (input.defaultValue !== input.value) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -36,7 +36,7 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .nav-link {
@@ -45,6 +45,7 @@
             padding: 8px 15px;
             border-radius: 5px;
             transition: background-color 0.3s;
+            font-size: 14px;
         }
 
         .nav-link:hover {
@@ -55,7 +56,20 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .back-btn {
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .logout-btn {
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -63,6 +77,12 @@
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         /* Контент */
@@ -73,12 +93,14 @@
         }
 
         .page-header {
+            text-align: center;
             margin-bottom: 30px;
         }
 
         .page-header h1 {
             color: #283593;
             margin-bottom: 10px;
+            font-size: 28px;
         }
 
         /* Выбор курса */
@@ -87,6 +109,7 @@
             gap: 10px;
             margin-bottom: 30px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .course-btn {
@@ -97,6 +120,8 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
+            text-decoration: none;
+            color: #283593;
         }
 
         .course-btn:hover {
@@ -109,15 +134,27 @@
             border-color: #283593;
         }
 
-        /* Расписание */
-        .schedule-container {
+        /* Контейнеры */
+        .section-container {
             background-color: white;
             border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
         }
 
+        .section-title {
+            color: #283593;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Табы дней */
         .day-tabs {
             display: flex;
             gap: 5px;
@@ -131,6 +168,12 @@
             cursor: pointer;
             border-bottom: 3px solid transparent;
             white-space: nowrap;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .day-tab:hover {
+            color: #283593;
         }
 
         .day-tab.active {
@@ -139,45 +182,43 @@
             color: #283593;
         }
 
+        /* Таблицы */
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
 
         .schedule-table th {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             padding: 15px;
             text-align: left;
-            border-bottom: 2px solid #e0e0e0;
-            color: #666;
+            color: #283593;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
         }
 
         .schedule-table td {
             padding: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
         }
 
         .schedule-table tr:hover {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
         }
 
         .lesson-time {
             font-weight: 600;
             color: #283593;
+            min-width: 120px;
         }
 
         /* Экзамены */
-        .exams-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
         .exams-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .exams-table th {
@@ -185,31 +226,156 @@
             padding: 12px;
             text-align: left;
             border-bottom: 2px solid #ffcdd2;
+            color: #283593;
+            font-weight: 600;
         }
 
         .exams-table td {
             padding: 12px;
             border-bottom: 1px solid #ffcdd2;
         }
+
+        .exams-table tr:hover {
+            background-color: #fff5f5;
+        }
+
+        /* Сообщения об отсутствии данных */
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px dashed #ddd;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        /* Хлебные крошки */
+        .breadcrumbs {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumbs a {
+            color: #283593;
+            text-decoration: none;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        /* Информационный блок */
+        .info-box {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #283593;
+        }
+
+        .info-box h3 {
+            color: #283593;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .course-selector {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .course-btn {
+                white-space: nowrap;
+            }
+
+            .day-tabs {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .schedule-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .schedule-table th,
+            .schedule-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .lesson-time {
+                min-width: 80px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Шапка -->
     <div class="header">
-        <div class="logo">Расписание занятий</div>
+        <div class="logo">Техникум - Расписание</div>
         <div class="nav-links">
-            <a href="/" class="nav-link">Главная</a>
-            <a href="/starosta" class="nav-link">Староста</a>
-            <a href="/raspisanie" class="nav-link active">Расписание</a>
-            <a href="/logout" class="back-btn">Выйти</a>
+            <a href="{{ url_for('home') }}" class="nav-link">Главная</a>
+            {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+            <a href="{{ url_for('starosta') }}" class="nav-link">Староста</a>
+            {% endif %}
+            <a href="{{ url_for('raspisanie') }}" class="nav-link active">Расписание</a>
+            <a href="{{ url_for('repetitorstvo') }}" class="nav-link">Репетиторство</a>
+            <a href="{{ url_for('users_list') }}" class="nav-link">Пользователи</a>
+
+            <div class="user-menu">
+                <span class="user-name">{{ session.name }}</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Выйти</a>
+            </div>
         </div>
     </div>
 
     <!-- Контент -->
     <div class="content">
+        <!-- Хлебные крошки -->
+        <div class="breadcrumbs">
+            <a href="{{ url_for('home') }}">Главная</a> / Расписание занятий
+        </div>
+
+        <!-- Заголовок страницы -->
         <div class="page-header">
-            <h1>Расписание занятий</h1>
-            <p>Вы вошли как: {{ user }}</p>
+            <h1>📅 Расписание занятий</h1>
         </div>
 
         <!-- Выбор курса -->
@@ -223,8 +389,8 @@
         </div>
 
         <!-- Расписание -->
-        <div class="schedule-container">
-            <h2>Расписание для {{ current_course }} курса</h2>
+        <div class="section-container">
+            <h2 class="section-title">📚 Расписание для {{ current_course }} курса</h2>
 
             {% if days %}
             <div class="day-tabs" id="dayTabs">
@@ -250,10 +416,10 @@
                     <tbody>
                         {% for lesson in lessons %}
                         <tr>
-                            <td class="lesson-time">{{ lesson.time }}</td>
-                            <td>{{ lesson.subject }}</td>
-                            <td>{{ lesson.teacher }}</td>
-                            <td>{{ lesson.room }}</td>
+                            <td class="lesson-time">🕐 {{ lesson.time }}</td>
+                            <td>📚 {{ lesson.subject }}</td>
+                            <td>👨‍🏫 {{ lesson.teacher }}</td>
+                            <td>🚪 {{ lesson.room }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -261,14 +427,18 @@
             </div>
             {% endfor %}
             {% else %}
-            <p>Расписание для {{ current_course }} курса пока не загружено</p>
+            <div class="empty-message">
+                <div class="empty-icon">📅</div>
+                <h3>Расписание не найдено</h3>
+                <p>Расписание для {{ current_course }} курса пока не загружено</p>
+            </div>
             {% endif %}
         </div>
 
         <!-- Экзамены -->
         {% if exams %}
-        <div class="exams-container">
-            <h2>Расписание экзаменов для {{ current_course }} курса</h2>
+        <div class="section-container">
+            <h2 class="section-title">📋 Расписание экзаменов для {{ current_course }} курса</h2>
             <table class="exams-table">
                 <thead>
                     <tr>
@@ -281,16 +451,29 @@
                 <tbody>
                     {% for exam in exams %}
                     <tr>
-                        <td>{{ exam.date }}</td>
-                        <td>{{ exam.subject }}</td>
-                        <td>{{ exam.teacher }}</td>
-                        <td>{{ exam.room }}</td>
+                        <td>📅 {{ exam.date }}</td>
+                        <td>📚 {{ exam.subject }}</td>
+                        <td>👨‍🏫 {{ exam.teacher }}</td>
+                        <td>🚪 {{ exam.room }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% endif %}
+
+        <!-- Информационный блок -->
+        <div class="info-box">
+            <h3>ℹ️ Информация о расписании</h3>
+            <p><strong>Текущий курс:</strong> {{ current_course }}</p>
+            <p><strong>Дней в расписании:</strong> {% if days %}{{ days|length }}{% else %}0{% endif %}</p>
+            {% if exams %}
+            <p><strong>Количество экзаменов:</strong> {{ exams|length }}</p>
+            {% endif %}
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                💡 <strong>Совет:</strong> Для изменения расписания обратитесь к старосте или администратору
+            </p>
+        </div>
     </div>
 
     <script>
@@ -307,12 +490,24 @@
             });
 
             // Показать выбранное расписание
-            document.getElementById(day + 'Schedule').style.display = 'block';
-            document.getElementById(day + 'Schedule').classList.add('active');
+            const scheduleElement = document.getElementById(day + 'Schedule');
+            if (scheduleElement) {
+                scheduleElement.style.display = 'block';
+                scheduleElement.classList.add('active');
+            }
 
             // Добавить активный класс выбранной вкладке
             event.target.classList.add('active');
         }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Показать первый день по умолчанию
+            const firstDaySchedule = document.querySelector('.day-schedule.active');
+            if (firstDaySchedule) {
+                firstDaySchedule.style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>

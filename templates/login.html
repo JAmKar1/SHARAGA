@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Техникум - Авторизация</title>
+    <title>Авторизация | University Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
         * {
             margin: 0;
@@ -18,99 +22,409 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .login-container {
             background-color: white;
-            border-radius: 10px;
-            padding: 40px;
+            border-radius: 15px;
+            padding: 2.5rem;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
             text-align: center;
             color: #283593;
             margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 2rem;
         }
 
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border: none;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left-color: #4CAF50;
+        }
+
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left-color: #f44336;
+        }
+
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left-color: #2196F3;
+        }
+
+        .alert-warning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border-left-color: #ff9800;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
+            margin-bottom: 8px;
+            color: #283593;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         input {
             width: 100%;
-            padding: 12px;
+            padding: 14px 15px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #283593;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
         }
 
         .login-button {
             width: 100%;
-            padding: 12px;
-            background-color: #283593;
+            padding: 15px;
+            background: linear-gradient(135deg, #283593 0%, #1a237e 100%);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .login-button:hover {
-            background-color: #1a237e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 53, 147, 0.3);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #283593;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .register-link a:hover {
+            color: #1a237e;
+            text-decoration: underline;
         }
 
         .demo-info {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            font-size: 14px;
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            font-size: 0.9rem;
             color: #666;
+            border-left: 4px solid #ff9800;
+        }
+
+        .demo-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-info strong {
+            color: #283593;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon {
+            padding-right: 50px;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .forgot-password a {
+            color: #283593;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .system-name {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #283593;
+        }
+
+        .system-name i {
+            font-size: 2.5rem;
+            color: #283593;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .form-divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .form-divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background-color: #e9ecef;
+        }
+
+        .form-divider span {
+            background-color: white;
+            padding: 0 15px;
+            color: #666;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .demo-credentials h6 {
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .demo-credentials p {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 1.75rem;
+            }
+
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .login-button {
+                padding: 13px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Стиль для состояния загрузки */
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h1>Портал Техникума</h1>
-        <p class="subtitle">Вход в систему</p>
+        <div class="system-name">
+            <i class="bi bi-shield-lock-fill"></i>
+            <h1>Техникум - Вход</h1>
+            <p class="subtitle">Система управления учебным процессом</p>
+        </div>
 
-        <form method="POST" action="/">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/login" id="loginForm">
             <div class="form-group">
                 <label for="username">Логин</label>
-                <input type="text" id="username" name="username" placeholder="Введите логин" required>
+                <div class="input-group">
+                    <input type="text" id="username" name="username" placeholder="Введите ваш логин" required class="input-with-icon">
+                    <i class="bi bi-person-fill"></i>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="password">Пароль</label>
-                <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required class="input-with-icon">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
             </div>
 
-            <button type="submit" class="login-button">Войти</button>
+            <div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Запомнить меня</label>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">Забыли пароль?</a>
+                </div>
+            </div>
+
+            <button type="submit" class="login-button" id="loginButton">
+                <i class="bi bi-box-arrow-in-right"></i> Войти в систему
+            </button>
         </form>
 
+        <div class="form-divider">
+            <span>Нет аккаунта?</span>
+        </div>
+
+        <div class="register-link">
+            Создайте новый аккаунт <a href="/register"><i class="bi bi-person-plus"></i> Зарегистрироваться</a>
+        </div>
+
+        <div class="demo-credentials">
+            <h6><i class="bi bi-info-circle-fill"></i> Тестовый доступ</h6>
+            <p><strong>Администратор:</strong> admin / admin123</p>
+            <p>Полный доступ ко всем функциям системы</p>
+        </div>
+
         <div class="demo-info">
-            <p><strong>Демо-доступ:</strong></p>
-            <p>Любой логин и пароль подойдут для тестирования</p>
-            <p>В реальном приложении подключите базу данных</p>
+            <p><strong><i class="bi bi-lightbulb"></i> О системе:</strong></p>
+            <p>Техникум - современная платформа для управления учебным процессом, расписанием, практикой и репетиторством.</p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('loginButton');
+
+            // Автоматическое скрытие flash сообщений
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s';
+                    setTimeout(() => alert.remove(), 500);
+                });
+            }, 5000);
+
+            // Автозаполнение для тестирования
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('demo') === 'admin') {
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin123';
+            }
+
+            // Обработка отправки формы
+            loginForm.addEventListener('submit', function(e) {
+                // Если форма не валидна, не меняем кнопку
+                if (!this.checkValidity()) {
+                    return;
+                }
+
+                // Добавляем индикатор загрузки
+                loginButton.innerHTML = '<span class="spinner"></span> Вход...';
+                loginButton.classList.add('loading');
+                loginButton.disabled = true;
+
+                // Форма будет отправлена автоматически
+            });
+        });
+    </script>
 </body>
 </html>
