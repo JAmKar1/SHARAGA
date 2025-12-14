@@ -1,323 +1,426 @@
-import secrets
-import time
-from datetime import datetime
+import sqlite3
 import hashlib
+import secrets
+from datetime import datetime
+from functools import wraps
+from flask import Flask, render_template, redirect, url_for, session, request, flash
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key_change_in_production'
+app.config['DATABASE'] = 'university.db'
 
 
-class AuthModule:
-    def __init__(self):
-        self.users = []
-        self.verification_codes = {}  # {identifier: {'code': '123456', 'expires': timestamp, 'user_type': 'student'}}
-        self.sessions = {}  # {session_id: user_id}
-        self.load_users()
+# ==================== ПРОСТЫЕ ФУНКЦИИ ДЛЯ ПАРОЛЕЙ ====================
 
-    def load_users(self):
-        """Загрузить тестовых пользователей разных типов"""
-        self.users = [
-            # Студенты
-            {
-                'id': 1,
-                'username': 'student1',
-                'password': self.hash_password('password123'),
-                'name': 'Иванов Иван Иванович',
-                'user_type': 'student',
-                'group': 'ПИ-21',
-                'email': 'student1@edu.tech',
-                'phone': '+79001234567',
-                'verified': True,
-                'created_at': '2023-01-15'
-            },
-            {
-                'id': 2,
-                'username': 'starosta',
-                'password': self.hash_password('starosta123'),
-                'name': 'Петров Петр Петрович',
-                'user_type': 'student',
-                'group': 'ПИ-21',
-                'email': 'starosta@edu.tech',
-                'phone': '+79002345678',
-                'verified': True,
-                'created_at': '2023-01-10'
-            },
-            # Преподаватели
-            {
-                'id': 3,
-                'username': 'teacher1',
-                'password': self.hash_password('teacher123'),
-                'name': 'Иванов Сергей Петрович',
-                'user_type': 'teacher',
-                'department': 'Программирование',
-                'email': 'i.s.petrovich@tech.edu',
-                'phone': '+79003456789',
-                'verified': True,
-                'created_at': '2022-09-01'
-            },
-            {
-                'id': 4,
-                'username': 'teacher2',
-                'password': self.hash_password('teacher456'),
-                'name': 'Петрова Мария Ивановна',
-                'user_type': 'teacher',
-                'department': 'Математика',
-                'email': 'm.i.petrova@tech.edu',
-                'phone': '+79004567890',
-                'verified': True,
-                'created_at': '2022-09-01'
-            },
-            # Администраторы
-            {
-                'id': 5,
-                'username': 'admin',
-                'password': self.hash_password('admin123'),
-                'name': 'Администратор Системы',
-                'user_type': 'admin',
-                'email': 'admin@techportal.edu',
-                'phone': '+79005678901',
-                'verified': True,
-                'created_at': '2022-08-01'
-            },
-            {
-                'id': 6,
-                'username': 'admin2',
-                'password': self.hash_password('admin456'),
-                'name': 'Завуч Петрова Е.В.',
-                'user_type': 'admin',
-                'email': 'zavuch@techportal.edu',
-                'phone': '+79006789012',
-                'verified': True,
-                'created_at': '2022-08-01'
-            }
-        ]
+def generate_password_hash(password):
+    """Простая функция хэширования пароля"""
+    salt = secrets.token_hex(8)
+    hash_obj = hashlib.sha256((password + salt).encode())
+    password_hash = hash_obj.hexdigest()
+    return f"sha256${salt}${password_hash}"
 
-    def hash_password(self, password):
-        """Хеширование пароля"""
-        return hashlib.sha256(password.encode()).hexdigest()
 
-    def verify_password(self, password, hashed_password):
-        """Проверка пароля"""
-        return self.hash_password(password) == hashed_password
+def check_password_hash(stored_hash, password):
+    """Проверка пароля"""
+    try:
+        algorithm, salt, stored_password_hash = stored_hash.split('$')
+        hash_obj = hashlib.sha256((password + salt).encode())
+        entered_hash = hash_obj.hexdigest()
+        return stored_password_hash == entered_hash
+    except:
+        return False
 
-    def authenticate(self, identifier, password, user_type=None):
-        """Аутентификация пользователя по логину, email или телефону"""
-        user = None
 
-        # Ищем пользователя по разным идентификаторам
-        for u in self.users:
-            if (u['username'] == identifier or
-                u['email'] == identifier or
-                u.get('phone') == identifier):
-                user = u
-                break
+# ==================== ФУНКЦИИ БАЗЫ ДАННЫХ ====================
+
+def get_db_connection():
+    """Соединение с базой данных"""
+    conn = sqlite3.connect(app.config['DATABASE'])
+    conn.row_factory = sqlite3.Row  # Возвращать строки как словари
+    return conn
+
+
+def init_database():
+    """Инициализация базы данных"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Таблица пользователей
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        user_type TEXT NOT NULL CHECK(user_type IN ('student', 'teacher', 'starosta', 'admin')),
+        email TEXT UNIQUE,
+        phone TEXT,
+        group_name TEXT,
+        course INTEGER,
+        department TEXT,
+        position TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
+    # Проверяем, есть ли администратор
+    cursor.execute("SELECT COUNT(*) as count FROM users WHERE user_type = 'admin'")
+    admin_count = cursor.fetchone()['count']
+
+    if admin_count == 0:
+        # Создаем администратора по умолчанию
+        admin_hash = generate_password_hash('admin123')
+        cursor.execute('''
+        INSERT INTO users (username, password_hash, full_name, user_type, email)
+        VALUES (?, ?, ?, ?, ?)
+        ''', ('admin', admin_hash, 'Администратор системы', 'admin', 'admin@university.ru'))
+        print("Создан администратор: admin / admin123")
+
+    conn.commit()
+    conn.close()
+
+
+# Инициализируем базу данных при старте
+init_database()
+
+
+# ==================== ФУНКЦИИ АВТОРИЗАЦИИ ====================
+
+class AuthSystem:
+    """Простая система аутентификации"""
+
+    @staticmethod
+    def register_user(username, password, full_name, user_type, **kwargs):
+        """Регистрация нового пользователя"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        try:
+            # Проверяем, существует ли пользователь
+            cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+            if cursor.fetchone():
+                return {'success': False, 'message': 'Пользователь с таким логином уже существует'}
+
+            # Хэшируем пароль
+            password_hash = generate_password_hash(password)
+
+            # Сохраняем пользователя
+            cursor.execute('''
+            INSERT INTO users (username, password_hash, full_name, user_type, 
+                             email, phone, group_name, course, department, position)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (username, password_hash, full_name, user_type,
+                  kwargs.get('email'), kwargs.get('phone'),
+                  kwargs.get('group'), kwargs.get('course'),
+                  kwargs.get('department'), kwargs.get('position')))
+
+            user_id = cursor.lastrowid
+            conn.commit()
+
+            return {'success': True, 'user_id': user_id}
+
+        except sqlite3.IntegrityError as e:
+            return {'success': False, 'message': f'Ошибка базы данных: {str(e)}'}
+        finally:
+            conn.close()
+
+    @staticmethod
+    def authenticate(username, password):
+        """Аутентификация пользователя"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+        SELECT id, username, password_hash, full_name, user_type 
+        FROM users WHERE username = ?
+        ''', (username,))
+
+        user = cursor.fetchone()
+        conn.close()
 
         if not user:
             return {'success': False, 'message': 'Пользователь не найден'}
 
-        # Проверяем тип пользователя, если указан
-        if user_type and user['user_type'] != user_type:
-            return {'success': False, 'message': f'Доступ только для {user_type}s'}
-
         # Проверяем пароль
-        if not self.verify_password(password, user['password']):
+        if not check_password_hash(user['password_hash'], password):
             return {'success': False, 'message': 'Неверный пароль'}
 
-        # Проверяем верификацию
-        if not user.get('verified', True):
-            return {'success': False, 'message': 'Аккаунт не подтвержден', 'user': user}
-
-        return {'success': True, 'user': user}
-
-    def get_user_by_id(self, user_id):
-        """Получить пользователя по ID"""
-        for user in self.users:
-            if user['id'] == user_id:
-                return user
-        return None
-
-    def get_user_by_email(self, email):
-        """Получить пользователя по email"""
-        for user in self.users:
-            if user['email'] == email:
-                return user
-        return None
-
-    def get_user_by_phone(self, phone):
-        """Получить пользователя по телефону"""
-        for user in self.users:
-            if user.get('phone') == phone:
-                return user
-        return None
-
-    def check_username_exists(self, username, user_type=None):
-        """Проверить существует ли пользователь с таким логином"""
-        if user_type:
-            return any(u['username'] == username and u['user_type'] == user_type for u in self.users)
-        return any(u['username'] == username for u in self.users)
-
-    def check_email_exists(self, email, user_type=None):
-        """Проверить существует ли пользователь с таким email"""
-        if user_type:
-            return any(u['email'] == email and u['user_type'] == user_type for u in self.users)
-        return any(u['email'] == email for u in self.users)
-
-    def check_phone_exists(self, phone, user_type=None):
-        """Проверить существует ли пользователь с таким телефоном"""
-        if user_type:
-            return any(u.get('phone') == phone and u['user_type'] == user_type for u in self.users)
-        return any(u.get('phone') == phone for u in self.users)
-
-    def generate_verification_code(self):
-        """Сгенерировать код подтверждения (6 цифр)"""
-        return ''.join([str(secrets.randbelow(10)) for _ in range(6)])
-
-    def send_email_verification(self, email, code, user_type):
-        """Отправить код подтверждения на email"""
-        # Демо-версия - вывод в консоль
-        print(f"=== ДЕМО: Отправка email на {email} ===")
-        print(f"Тип пользователя: {user_type}")
-        print(f"Код подтверждения: {code}")
-        print("=== КОНЕЦ ДЕМО ===")
-        return True
-
-    def send_sms_verification(self, phone, code, user_type):
-        """Отправить код подтверждения по SMS"""
-        # Демо-версия - вывод в консоль
-        print(f"=== ДЕМО: Отправка SMS на {phone} ===")
-        print(f"Тип пользователя: {user_type}")
-        print(f"Код подтверждения: {code}")
-        print("=== КОНЕЦ ДЕМО ===")
-        return True
-
-    def create_verification_code(self, identifier, method='email', user_type='student'):
-        """Создать и отправить код подтверждения"""
-        code = self.generate_verification_code()
-        expires_at = time.time() + 600  # 10 минут
-
-        self.verification_codes[identifier] = {
-            'code': code,
-            'expires': expires_at,
-            'method': method,
-            'user_type': user_type,
-            'attempts': 0
+        # Возвращаем данные пользователя
+        return {
+            'success': True,
+            'user': {
+                'id': user['id'],
+                'username': user['username'],
+                'full_name': user['full_name'],
+                'user_type': user['user_type']
+            }
         }
 
-        if method == 'email':
-            success = self.send_email_verification(identifier, code, user_type)
-        else:  # sms
-            success = self.send_sms_verification(identifier, code, user_type)
+    @staticmethod
+    def get_user_by_id(user_id):
+        """Получение пользователя по ID"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-        return success, code
-def verify_code(self, identifier, code):
+        cursor.execute('''
+        SELECT id, username, full_name, user_type, email, phone, 
+               group_name, course, department, position 
+        FROM users WHERE id = ?
+        ''', (user_id,))
 
-    if identifier not in self.verification_codes:
-        return {'success': False, 'message': 'Код не найден или устарел'}
-        verification = self.verification_codes[identifier]
+        user = cursor.fetchone()
+        conn.close()
 
-    if time.time() > verification['expires']:
-            del self.verification_codes[identifier]
-            return {'success': False, 'message': 'Код устарел'}
+        if user:
+            return dict(user)  # Преобразуем в словарь
+        return None
 
-        # Проверка попыток
-    if verification['attempts'] >= 3:
-            del self.verification_codes[identifier]
-            return {'success': False, 'message': 'Превышено количество попыток'}
+    @staticmethod
+    def get_all_users():
+        """Получение всех пользователей"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-         verification['attempts'] += 1
+        cursor.execute('''
+        SELECT id, username, full_name, user_type, email, phone, 
+               group_name, course, department, position, created_at 
+        FROM users ORDER BY user_type, full_name
+        ''')
 
-    if verification['code'] == code:
-            # Код верный
-            user_type = verification['user_type']
-            del self.verification_codes[identifier]
-            return {'success': True, 'message': 'Код подтвержден', 'user_type': user_type}
+        users = [dict(row) for row in cursor.fetchall()]
+        conn.close()
+        return users
+
+
+# ==================== ДЕКОРАТОРЫ ДЛЯ ПРОВЕРКИ ДОСТУПА ====================
+
+def login_required(f):
+    """Требует авторизации"""
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Пожалуйста, войдите в систему', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def role_required(*allowed_roles):
+    """Требует определенной роли"""
+
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'user_type' not in session:
+                flash('Доступ запрещен', 'error')
+                return redirect(url_for('login'))
+
+            if session['user_type'] not in allowed_roles:
+                flash(f'Доступ только для: {", ".join(allowed_roles)}', 'error')
+                return redirect(url_for('dashboard'))
+
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
+# ==================== МАРШРУТЫ ====================
+
+@app.route('/')
+def index():
+    """Главная страница"""
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    return render_template('index.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Страница входа для всех"""
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if not username or not password:
+            flash('Заполните все поля', 'error')
+            return render_template('login.html')
+
+        auth_result = AuthSystem.authenticate(username, password)
+
+        if auth_result['success']:
+            user = auth_result['user']
+
+            # Сохраняем в сессии
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            session['user_type'] = user['user_type']
+            session['name'] = user['full_name']
+
+            flash(f'Добро пожаловать, {user["full_name"]}!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash(auth_result['message'], 'error')
+
+    return render_template('login.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Регистрация для всех типов пользователей"""
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        # Основные данные
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        full_name = request.form.get('full_name')
+        user_type = request.form.get('user_type', 'student')
+
+        # Дополнительные данные в зависимости от типа
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+
+        # Данные для студентов и старост
+        group = request.form.get('group')
+        course = request.form.get('course')
+
+        # Данные для преподавателей
+        department = request.form.get('department')
+        position = request.form.get('position')
+
+        # Валидация
+        if not all([username, password, confirm_password, full_name]):
+            flash('Заполните все обязательные поля', 'error')
+            return render_template('register.html')
+
+        if password != confirm_password:
+            flash('Пароли не совпадают', 'error')
+            return render_template('register.html')
+
+        if len(password) < 6:
+            flash('Пароль должен быть не менее 6 символов', 'error')
+            return render_template('register.html')
+
+        # Регистрируем пользователя
+        result = AuthSystem.register_user(
+            username=username,
+            password=password,
+            full_name=full_name,
+            user_type=user_type,
+            email=email,
+            phone=phone,
+            group=group,
+            course=course,
+            department=department,
+            position=position
+        )
+
+        if result['success']:
+            flash('Регистрация успешна! Теперь войдите в систему.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash(result['message'], 'error')
+
+    return render_template('register.html')
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    """Общая панель управления для всех"""
+    user_data = AuthSystem.get_user_by_id(session['user_id'])
+
+    # В зависимости от роли показываем разную информацию
+    if session['user_type'] == 'admin':
+        users = AuthSystem.get_all_users()
+        return render_template('dashboard.html', user=user_data, users=users)
     else:
-            return {'success': False, 'message': 'Неверный код'}
+        return render_template('dashboard.html', user=user_data)
 
-    def create_user(self, username, password, name, user_type, email, phone=None, **kwargs):
-        new_user = {
-            'id': len(self.users) + 1,
-            'username': username,
-            'password': self.hash_password(password),
-            'name': name,
-            'user_type': user_type,
-            'email': email,
-            'phone': phone,
-            'verified': False,
-            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
 
-        # Добавляем дополнительные поля в зависимости от типа пользователя
-        if user_type == 'student':
-            new_user['group'] = kwargs.get('group', 'ПИ-21')
-            new_user['course'] = kwargs.get('course', 1)
-        elif user_type == 'teacher':
-            new_user['department'] = kwargs.get('department', '')
-            new_user['position'] = kwargs.get('position', 'Преподаватель')
-        elif user_type == 'admin':
-            new_user['position'] = kwargs.get('position', 'Администратор')
+@app.route('/profile')
+@login_required
+def profile():
+    """Профиль пользователя"""
+    user_data = AuthSystem.get_user_by_id(session['user_id'])
+    return render_template('profile.html', user=user_data)
 
-        self.users.append(new_user)
-        return new_user
 
-    def verify_user(self, identifier):
-        """Подтвердить пользователя по email или телефону"""
-        user = None
+@app.route('/users')
+@login_required
+@role_required('admin')
+def users_list():
+    """Список всех пользователей (только для админа)"""
+    users = AuthSystem.get_all_users()
+    return render_template('users.html', users=users)
 
-        # Ищем пользователя по email или телефону
-        for u in self.users:
-            if u['email'] == identifier or u.get('phone') == identifier:
-                user = u
-                break
 
-        if user:
-            user['verified'] = True
-            return {'success': True, 'user': user}
+@app.route('/logout')
+def logout():
+    """Выход из системы"""
+    session.clear()
+    flash('Вы успешно вышли из системы', 'info')
+    return redirect(url_for('index'))
 
-        return {'success': False, 'message': 'Пользователь не найден'}
 
-    def update_password(self, identifier, new_password):
-        """Обновить пароль пользователя"""
-        user = None
+# ==================== ОБЩИЕ ФУНКЦИИ ====================
 
-        # Ищем пользователя по email или телефону
-        for u in self.users:
-            if u['email'] == identifier or u.get('phone') == identifier:
-                user = u
-                break
+@app.route('/schedule')
+@login_required
+def schedule():
+    """Расписание (доступно всем)"""
+    return render_template('schedule.html',
+                           user_type=session['user_type'],
+                           name=session['name'])
 
-        if user:
-            user['password'] = self.hash_password(new_password)
-            return {'success': True, 'user': user}
 
-        return {'success': False, 'message': 'Пользователь не найден'}
+@app.route('/events')
+@login_required
+def events():
+    """Мероприятия (доступно всем)"""
+    return render_template('events.html',
+                           user_type=session['user_type'],
+                           name=session['name'])
 
-    def create_session(self, user_id):
-        """Создать сессию для пользователя"""
-        session_id = secrets.token_hex(32)
-        self.sessions[session_id] = {
-            'user_id': user_id,
-            'created_at': time.time(),
-            'last_activity': time.time()
-        }
-        return session_id
 
-    def validate_session(self, session_id):
-        """Проверить валидность сессии"""
-        if session_id in self.sessions:
-            session = self.sessions[session_id]
-            # Проверяем время бездействия (30 минут)
-            if time.time() - session['last_activity'] < 1800:
-                session['last_activity'] = time.time()
+@app.route('/messages')
+@login_required
+def messages():
+    """Сообщения (доступно всем)"""
+    return render_template('messages.html',
+                           user_type=session['user_type'],
+                           name=session['name'])
 
-                return session['user_id']
-            else:
-                # Сессия истекла
-                del self.sessions[session_id]
-        return None
 
-        def delete_session(self, session_id):
-            """Удалить сессию"""
-            if session_id in self.sessions:
-                del self.sessions[session_id]
+@app.route('/tasks')
+@login_required
+def tasks():
+    """Задачи (доступно всем)"""
+    return render_template('tasks.html',
+                           user_type=session['user_type'],
+                           name=session['name'])
 
-        def get_users_by_type(self, user_type):
-            """Получить всех пользователей определенного типа"""
-            return [u for u in self.users if u['user_type'] == user_type]
+
+# ==================== ЗАПУСК ПРИЛОЖЕНИЯ ====================
+
+if __name__ == '__main__':
+    print("=" * 50)
+    print("СИСТЕМА УЧЕБНОГО ПОРТАЛА")
+    print("=" * 50)
+    print("Доступные учетные записи для тестирования:")
+    print("1. Администратор: admin / admin123")
+    print("2. Можете зарегистрироваться с любым типом пользователя")
+    print("=" * 50)
+    print("База данных: university.db")
+    print("=" * 50)
+
+    app.run(debug=True, host='0.0.0.0', port=5000)

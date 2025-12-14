@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Техникум - Редактирование пользователя</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #283593;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .edit-form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #283593;
+            outline: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .user-info-summary {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #283593;
+        }
+
+        .user-info-summary p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .user-type-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .type-admin {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .type-teacher {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .type-starosta {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .type-student {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .password-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #856404;
+        }
+        
+        .delete-section {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Редактирование пользователя</div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/users" class="nav-link">Пользователи</a>
+            <a href="/admin/create_user" class="nav-link">Создать пользователя</a>
+            <a href="/logout" class="back-btn">Выйти</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="page-header">
+            <h1>Редактирование пользователя</h1>
+            <p>Изменение данных пользователя системы</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="user-info-summary">
+            <p><strong>Редактируемый пользователь:</strong> {{ target_user.full_name }}</p>
+            <p><strong>Текущий тип:</strong> 
+                <span class="user-type-badge type-{{ target_user.user_type }}">
+                    {% if target_user.user_type == 'admin' %}Админ
+                    {% elif target_user.user_type == 'teacher' %}Преподаватель
+                    {% elif target_user.user_type == 'starosta' %}Староста
+                    {% elif target_user.user_type == 'student' %}Студент
+                    {% else %}{{ target_user.user_type }}{% endif %}
+                </span>
+            </p>
+            <p><strong>ID пользователя:</strong> {{ target_user.id }}</p>
+            <p><strong>Дата создания:</strong> {{ target_user.created_at[:10] if target_user.created_at else 'Неизвестно' }}</p>
+        </div>
+
+        <div class="password-info">
+            💡 <strong>Примечание:</strong> Для изменения пароля введите новый пароль в поле ниже. 
+            Если не хотите менять пароль - оставьте поле пустым.
+        </div>
+
+        <div class="edit-form-container">
+            <form method="POST" action="/admin/edit_user/{{ target_user.id }}" id="editForm">
+                <!-- CSRF защита (если используете Flask-WTF или аналогичное) -->
+                {% if csrf_token %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {% endif %}
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">Логин *</label>
+                        <input type="text" id="username" name="username" 
+                               value="{{ target_user.username }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full_name">ФИО *</label>
+                        <input type="text" id="full_name" name="full_name" 
+                               value="{{ target_user.full_name }}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group password-field">
+                        <label for="password">Новый пароль</label>
+                        <input type="password" id="password" name="password" 
+                               placeholder="Оставьте пустым, чтобы не менять">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                            👁️
+                        </button>
+                    </div>
+                    
+                    <div class="form-group password-field">
+                        <label for="confirm_password">Подтверждение пароля</label>
+                        <input type="password" id="confirm_password" name="confirm_password" 
+                               placeholder="Повторите новый пароль">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user_type">Тип пользователя *</label>
+                        <select id="user_type" name="user_type" required>
+                            <option value="student" {% if target_user.user_type == 'student' %}selected{% endif %}>Студент</option>
+                            <option value="teacher" {% if target_user.user_type == 'teacher' %}selected{% endif %}>Преподаватель</option>
+                            <option value="starosta" {% if target_user.user_type == 'starosta' %}selected{% endif %}>Староста</option>
+                            <option value="admin" {% if target_user.user_type == 'admin' %}selected{% endif %}>Администратор</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" 
+                               value="{{ target_user.email or '' }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Телефон</label>
+                        <input type="tel" id="phone" name="phone" 
+                               value="{{ target_user.phone or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <!-- Пустая ячейка для выравнивания -->
+                    </div>
+                </div>
+
+                <!-- Поля для студентов -->
+                <div id="student-fields" class="{% if target_user.user_type in ['student', 'starosta'] %}{% else %}hidden{% endif %}">
+                    <h3 style="color: #283593; margin: 20px 0 15px 0;">Данные студента</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="group">Группа</label>
+                            <input type="text" id="group" name="group" 
+                                   value="{{ target_user.group_name or '' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="course">Курс</label>
+                            <input type="number" id="course" name="course" 
+                                   value="{{ target_user.course or '' }}" min="1" max="6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Поля для преподавателей -->
+                <div id="teacher-fields" class="{% if target_user.user_type == 'teacher' %}{% else %}hidden{% endif %}">
+                    <h3 style="color: #283593; margin: 20px 0 15px 0;">Данные преподавателя</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="department">Кафедра/Отдел</label>
+                            <input type="text" id="department" name="department" 
+                                   value="{{ target_user.department or '' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="position">Должность</label>
+                            <input type="text" id="position" name="position" 
+                                   value="{{ target_user.position or '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/users" class="btn btn-cancel">Отмена</a>
+                    <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Кнопка удаления (отдельно от формы) -->
+        {% if session.user_id != target_user.id %}
+        <div class="delete-section">
+            <form action="/admin/delete_user/{{ target_user.id }}" method="POST" 
+                  onsubmit="return confirmDelete()">
+                {% if csrf_token %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {% endif %}
+                <button type="submit" class="btn btn-delete">Удалить пользователя</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Показ/скрытие полей в зависимости от типа пользователя
+        document.getElementById('user_type').addEventListener('change', function() {
+            const type = this.value;
+            const studentFields = document.getElementById('student-fields');
+            const teacherFields = document.getElementById('teacher-fields');
+            
+            // Скрываем все
+            studentFields.classList.add('hidden');
+            teacherFields.classList.add('hidden');
+            
+            // Показываем нужные
+            if (type === 'student' || type === 'starosta') {
+                studentFields.classList.remove('hidden');
+            } else if (type === 'teacher') {
+                teacherFields.classList.remove('hidden');
+            }
+        });
+
+        // Показать/скрыть пароль (универсальная функция)
+        function togglePassword(fieldId, button) {
+            const passwordField = document.getElementById(fieldId);
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                passwordField.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        // Валидация формы
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (!username || !fullName) {
+                e.preventDefault();
+                alert('Заполните обязательные поля (логин и ФИО)');
+                return false;
+            }
+            
+            // Проверка пароля, если он указан
+            if (password || confirmPassword) {
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Пароли не совпадают!');
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    e.preventDefault();
+                    alert('Пароль должен быть не менее 6 символов');
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+
+        // Подтверждение удаления
+        function confirmDelete() {
+            return confirm('Вы уверены, что хотите удалить пользователя {{ target_user.full_name }}? Это действие нельзя отменить.');
+        }
+
+        // Инициализация полей при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Убедимся, что правильные поля отображаются при загрузке
+            const type = document.getElementById('user_type').value;
+            const studentFields = document.getElementById('student-fields');
+            const teacherFields = document.getElementById('teacher-fields');
+            
+            if (type === 'student' || type === 'starosta') {
+                studentFields.classList.remove('hidden');
+            } else if (type === 'teacher') {
+                teacherFields.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
