@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание | Техникум</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
         :root {
@@ -15,11 +13,6 @@
             --accent-teal: #4d8b8b;
             --light-bg: #f8f9fa;
             --dark-text: #2c3e50;
-            --light-text: #6c757d;
-            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
-            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
-            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
-            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
         }
 
         body {
@@ -27,459 +20,128 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: var(--dark-text);
             padding-top: 70px;
-            line-height: 1.6;
         }
 
-        /* Навигация */
         .navbar {
             background: white;
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            padding: 12px 0;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-blue) !important;
-            font-size: 1.4rem;
-        }
-
-        .navbar-brand i {
-            color: var(--accent-teal);
-        }
-
-        .nav-link {
-            color: var(--dark-text) !important;
-            font-weight: 500;
-            padding: 8px 16px !important;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            margin: 0 2px;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(74, 111, 165, 0.1);
-            color: var(--primary-blue) !important;
-            transform: translateY(-1px);
-        }
-
-        .nav-link.active {
-            background: var(--gradient-primary);
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
-        }
-
-        /* Главный заголовок */
-        .main-header {
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
-        }
-
-        .main-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.3;
-            animation: float 20s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); }
-            100% { transform: translateY(-100px) translateX(-100px); }
-        }
-
-        /* Иконка расписания */
-        .schedule-icon-container {
-            position: relative;
-            margin: 0 auto;
-        }
-
-        .schedule-icon-wrapper {
-            width: 90px;
-            height: 90px;
-            background: rgba(255, 255, 255, 0.25);
-            border: 4px solid rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            box-shadow:
-                0 0 0 4px rgba(255, 255, 255, 0.2),
-                0 8px 25px rgba(0, 0, 0, 0.25),
-                inset 0 0 20px rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .schedule-icon-inner {
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(135deg, #ffffff, #f5f9ff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-blue);
-            font-weight: bold;
-            font-size: 32px;
-            box-shadow:
-                inset 0 0 15px rgba(255, 255, 255, 0.8),
-                0 4px 12px rgba(0, 0, 0, 0.15);
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Карточки контента */
         .content-card {
             background: white;
-            border-radius: 18px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(74, 111, 165, 0.1);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .content-card:hover {
-            box-shadow: var(--hover-shadow);
-            transform: translateY(-2px);
-        }
-
-        .content-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .content-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        /* Хлебные крошки */
-        .breadcrumb {
-            background: white;
-            border-radius: 12px;
-            padding: 15px 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(74, 111, 165, 0.15);
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, rgba(74, 111, 165, 0.03) 0%, rgba(77, 139, 139, 0.03) 100%);
-        }
-
-        .breadcrumb-item a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .breadcrumb-item.active {
-            color: var(--dark-text);
-            font-weight: 600;
-        }
-
-        /* Кнопки выбора курса */
-        .course-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .course-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 25px;
-            background: rgba(74, 111, 165, 0.08);
+            padding: 10px 20px;
+            background: rgba(74, 111, 165, 0.1);
             border: 2px solid rgba(74, 111, 165, 0.2);
-            border-radius: 25px;
+            border-radius: 20px;
             color: var(--primary-blue);
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            display: inline-block;
+            margin: 5px;
         }
 
-        .course-btn:hover {
-            background: rgba(74, 111, 165, 0.15);
-            transform: translateY(-2px);
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
-            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.15);
-        }
-
-        .course-btn.active {
-            background: var(--gradient-primary);
+        .course-btn:hover, .course-btn.active {
+            background: var(--primary-blue);
             color: white;
             border-color: var(--primary-blue);
-            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
-        }
-
-        /* Вкладки дней */
-        .day-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding: 0;
         }
 
         .day-tab {
-            padding: 12px 24px;
-            background: rgba(74, 111, 165, 0.08);
+            padding: 10px 20px;
+            background: rgba(74, 111, 165, 0.1);
             border: 2px solid rgba(74, 111, 165, 0.2);
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
-            user-select: none;
-            position: relative;
-            overflow: hidden;
-            color: var(--primary-blue);
+            margin: 5px;
+            display: inline-block;
         }
 
-        .day-tab:hover {
-            background: rgba(74, 111, 165, 0.15);
-            border-color: var(--primary-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(74, 111, 165, 0.1);
-        }
-
-        .day-tab.active {
-            background: var(--gradient-primary);
+        .day-tab:hover, .day-tab.active {
+            background: var(--primary-blue);
             color: white;
             border-color: var(--primary-blue);
-            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
         }
 
-        /* Таблицы */
-        .table-container {
-            background: white;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
-            border: 1px solid rgba(74, 111, 165, 0.1);
-        }
-
-        .table-header {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 25px 30px;
-        }
-
-        /* Строки таблицы */
-        .lesson-row:hover {
-            background-color: rgba(74, 111, 165, 0.03) !important;
-            transform: translateY(-1px);
-            transition: all 0.2s ease;
-        }
-
-        .lesson-time {
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        /* Бейджи */
-        .schedule-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            background: var(--gradient-accent);
-            color: white;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        /* Футер */
-        .footer {
-            background: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            padding: 30px 0;
-            margin-top: 60px;
-        }
-
-        /* Анимации */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .fade-in {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-
-        /* День расписания */
         .day-schedule {
             display: none;
-            animation: fadeInUp 0.4s ease forwards;
-            opacity: 0;
         }
 
         .day-schedule.active {
             display: block;
-            animation: fadeInUp 0.4s ease forwards;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* Информационный блок */
-        .info-card {
-            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05), rgba(77, 139, 139, 0.05));
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid rgba(74, 111, 165, 0.1);
-            margin-top: 25px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .info-card i {
-            color: var(--accent-teal);
-            margin-right: 10px;
+        .lesson-row:hover {
+            background-color: rgba(74, 111, 165, 0.05);
         }
 
-        /* Пустое состояние */
+        .upload-form {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .group-search {
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--light-text);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
-            border-radius: 15px;
-            margin: 20px 0;
-            border: 2px dashed rgba(74, 111, 165, 0.2);
+            padding: 40px 20px;
+            color: #6c757d;
         }
 
         .empty-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            color: rgba(74, 111, 165, 0.3);
-            opacity: 0.7;
-        }
-
-        /* Аватар пользователя */
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 4px 8px rgba(74, 111, 165, 0.2);
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 60px;
-            }
-
-            .main-header {
-                padding: 30px 20px;
-            }
-
-            .content-card {
-                padding: 20px;
-            }
-
-            .schedule-icon-wrapper {
-                width: 70px;
-                height: 70px;
-            }
-
-            .schedule-icon-inner {
-                width: 56px;
-                height: 56px;
-                font-size: 24px;
-            }
-
-            .day-tabs {
-                justify-content: center;
-            }
-
-            .day-tab {
-                flex: 1;
-                min-width: 120px;
-                text-align: center;
-                padding: 10px 16px;
-            }
-
-            .course-btn {
-                flex: 1;
-                min-width: 120px;
-                text-align: center;
-                padding: 10px 20px;
-            }
-
-            .table-header {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .content-card {
-                padding: 15px;
-            }
-
-            .main-header {
-                padding: 20px 15px;
-            }
-
-            .day-tab {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-            }
-
-            .course-btn {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #adb5bd;
         }
     </style>
 </head>
 <body>
-    <!-- Навигационная панель -->
+    <!-- Навигация (как в исходном коде) -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('home') }}">
@@ -516,14 +178,14 @@
                 <ul class="navbar-nav">
                     {% if session.user_type == 'admin' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('users_list') }}">
-                            <i class="bi bi-people me-1"></i>Пользователи
+                        <a class="nav-link" href="{{ url_for('admin_schedule') }}">
+                            <i class="bi bi-gear me-1"></i>Управление расписанием
                         </a>
                     </li>
                     {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <div class="user-avatar me-2">
+                            <div class="user-avatar me-2" style="width: 35px; height: 35px; background: linear-gradient(135deg, #4a6fa5, #3a5885); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
                                 {{ session.name[0] if session.name else '?' }}
                             </div>
                             <span>{{ session.name }}</span>
@@ -541,78 +203,125 @@
     </nav>
 
     <!-- Основной контент -->
-    <div class="container">
-        <!-- Хлебные крошки -->
-        <nav aria-label="breadcrumb" class="fade-in">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Расписание занятий</li>
-            </ol>
-        </nav>
-
-        <!-- Заголовок страницы -->
-        <div class="main-header fade-in">
-            <div class="row align-items-center">
-                <div class="col-md-2 col-12 text-center mb-3 mb-md-0">
-                    <div class="schedule-icon-container">
-                        <div class="schedule-icon-wrapper">
-                            <div class="schedule-icon-inner">
-                                <i class="bi bi-calendar-week"></i>
-                            </div>
-                        </div>
+    <div class="container mt-4">
+        <!-- Флэш-сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message|safe }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                </div>
-                <div class="col-md-10 col-12">
-                    <h1 class="display-6 mb-2">📅 Расписание занятий</h1>
-                    <p class="lead mb-0">Актуальное расписание для всех курсов техникума</p>
-                </div>
-            </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Заголовок -->
+        <div class="content-card">
+            <h1 class="mb-3"><i class="bi bi-calendar-week text-primary"></i> Расписание занятий</h1>
+            <p class="text-muted">Просмотр расписания для всех групп техникума</p>
         </div>
 
-        <!-- Выбор курса -->
-        <div class="content-card fade-in delay-1">
-            <h4><i class="bi bi-mortarboard"></i> Выберите курс</h4>
-            <div class="course-selector">
+        <!-- Загрузка расписания (только для админа) -->
+        {% if session.user_type == 'admin' %}
+        <div class="content-card">
+            <h4><i class="bi bi-cloud-upload text-primary"></i> Загрузить расписание из PDF</h4>
+            <form action="{{ url_for('upload_schedule') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <input type="file" class="form-control" name="schedule_file" accept=".pdf" required>
+                        <small class="form-text text-muted">Загрузите PDF файл с расписанием. Файл будет автоматически обработан.</small>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-upload me-2"></i>Загрузить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Поиск группы -->
+        <div class="content-card">
+            <h4><i class="bi bi-search text-primary"></i> Поиск группы</h4>
+            <div class="group-search mb-4">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text"><i class="bi bi-people"></i></span>
+                    <input type="text" class="form-control" id="groupSearch"
+                           placeholder="Введите название группы (например: ИСП-101, ПИ-21)"
+                           value="{{ selected_group }}">
+                    <button class="btn btn-primary" onclick="loadSelectedGroup()">
+                        <i class="bi bi-arrow-right"></i> Показать
+                    </button>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <!-- Быстрый выбор по курсам -->
+            <h5 class="mb-3">Быстрый выбор по курсам:</h5>
+            <div class="mb-4">
                 {% for course in courses %}
-                <a href="/raspisanie?course={{ course }}"
-                   class="course-btn {% if course == current_course %}active{% endif %}">
+                <a href="/raspisanie?course={{ course }}" class="course-btn {% if current_course == course %}active{% endif %}">
                     {{ course }} курс
                 </a>
                 {% endfor %}
             </div>
+
+            <!-- Популярные группы -->
+            {% if groups %}
+            <h5 class="mb-3">Доступные группы:</h5>
+            <div class="d-flex flex-wrap">
+                {% for group in groups[:12] %}
+                <a href="/raspisanie?group={{ group }}" class="course-btn {% if selected_group == group %}active{% endif %}">
+                    {{ group }}
+                </a>
+                {% endfor %}
+                {% if groups|length > 12 %}
+                <span class="course-btn">+{{ groups|length - 12 }} еще</span>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
 
-        <!-- Расписание занятий -->
-        <div class="content-card fade-in delay-2">
-            <h4><i class="bi bi-calendar3"></i> Расписание для {{ current_course }} курса</h4>
+        <!-- Расписание -->
+        {% if selected_group %}
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-calendar3 text-primary"></i> Расписание группы <strong>{{ selected_group }}</strong></h4>
+                <span class="badge bg-primary fs-6">Курс: {{ current_course }}</span>
+            </div>
 
             {% if days %}
-            <div class="day-tabs" id="dayTabs">
+            <!-- Вкладки дней -->
+            <div class="d-flex flex-wrap mb-4" id="dayTabs">
                 {% for day in days %}
-                <div class="day-tab {% if loop.first %}active{% endif %}"
-                     onclick="showDay('{{ day }}')">
+                <div class="day-tab {% if loop.first %}active{% endif %}" onclick="showDay('{{ day }}')">
                     {{ day }}
                 </div>
                 {% endfor %}
             </div>
 
+            <!-- Расписание по дням -->
             {% for day, lessons in schedule.items() %}
             <div class="day-schedule {% if loop.first %}active{% endif %}" id="{{ day }}Schedule">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="ps-4">Время</th>
-                                <th scope="col">Предмет</th>
-                                <th scope="col">Преподаватель</th>
-                                <th scope="col">Аудитория</th>
+                                <th style="width: 10%">№</th>
+                                <th style="width: 20%">Время</th>
+                                <th style="width: 30%">Предмет</th>
+                                <th style="width: 25%">Преподаватель</th>
+                                <th style="width: 15%">Аудитория</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for lesson in lessons %}
                             <tr class="lesson-row">
-                                <td class="ps-4 align-middle">
-                                    <span class="lesson-time">
+                                <td class="align-middle">{{ loop.index }}</td>
+                                <td class="align-middle">
+                                    <span class="fw-bold text-primary">
                                         <i class="bi bi-clock"></i> {{ lesson.time }}
                                     </span>
                                 </td>
@@ -623,7 +332,9 @@
                                     <i class="bi bi-person"></i> {{ lesson.teacher }}
                                 </td>
                                 <td class="align-middle">
-                                    <i class="bi bi-door-closed"></i> {{ lesson.room }}
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-door-closed"></i> {{ lesson.room }}
+                                    </span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -633,49 +344,45 @@
             </div>
             {% endfor %}
             {% else %}
+            <!-- Пустое состояние -->
             <div class="empty-state">
                 <div class="empty-icon">
                     <i class="bi bi-calendar-x"></i>
                 </div>
-                <h3>Расписание не найдено</h3>
-                <p class="mb-4">Расписание для {{ current_course }} курса пока не загружено</p>
-                <span class="schedule-badge">
-                    <i class="bi bi-info-circle"></i> Ожидайте обновления
-                </span>
+                <h4>Расписание не загружено</h4>
+                <p class="mb-3">Для группы {{ selected_group }} пока нет расписания</p>
+                {% if session.user_type == 'admin' %}
+                <a href="{{ url_for('admin_schedule') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Добавить расписание
+                </a>
+                {% endif %}
             </div>
             {% endif %}
         </div>
 
         <!-- Экзамены -->
         {% if exams %}
-        <div class="table-container fade-in delay-3">
-            <div class="table-header">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="mb-0"><i class="bi bi-clipboard-check"></i> Расписание экзаменов</h2>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <span class="badge bg-white text-dark fs-6 px-3 py-2">
-                            {{ exams|length }} экзаменов
-                        </span>
-                    </div>
-                </div>
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-clipboard-check text-primary"></i> Расписание экзаменов</h4>
+                <span class="badge bg-danger fs-6">{{ exams|length }} экзаменов</span>
             </div>
+
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col" class="ps-4">Дата</th>
-                            <th scope="col">Предмет</th>
-                            <th scope="col">Преподаватель</th>
-                            <th scope="col">Аудитория</th>
+                            <th>Дата</th>
+                            <th>Предмет</th>
+                            <th>Преподаватель</th>
+                            <th>Аудитория</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for exam in exams %}
                         <tr class="lesson-row">
-                            <td class="ps-4 align-middle">
-                                <i class="bi bi-calendar-date"></i> {{ exam.date }}
+                            <td class="align-middle">
+                                <i class="bi bi-calendar-date text-danger"></i> {{ exam.date }}
                             </td>
                             <td class="align-middle">
                                 <i class="bi bi-book"></i> {{ exam.subject }}
@@ -684,7 +391,9 @@
                                 <i class="bi bi-person"></i> {{ exam.teacher }}
                             </td>
                             <td class="align-middle">
-                                <i class="bi bi-door-closed"></i> {{ exam.room }}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-door-closed"></i> {{ exam.room }}
+                                </span>
                             </td>
                         </tr>
                         {% endfor %}
@@ -694,135 +403,128 @@
         </div>
         {% endif %}
 
-        <!-- Информационный блок -->
-        <div class="info-card fade-in">
-            <h5 class="mb-3"><i class="bi bi-info-circle"></i> Информация о расписании</h5>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span><i class="bi bi-123 me-2"></i>Текущий курс:</span>
-                        <strong>{{ current_course }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span><i class="bi bi-calendar-check me-2"></i>Дней в расписании:</span>
-                        <strong>{% if days %}{{ days|length }}{% else %}0{% endif %}</strong>
-                    </div>
+        {% else %}
+        <!-- Состояние без выбранной группы -->
+        <div class="content-card">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-search"></i>
                 </div>
-                <div class="col-md-6 mb-3">
-                    {% if exams %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span><i class="bi bi-clipboard-check me-2"></i>Количество экзаменов:</span>
-                        <strong>{{ exams|length }}</strong>
-                    </div>
-                    {% endif %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-person me-2"></i>Ваш статус:</span>
-                        <strong>
-                            {% if session.user_type == 'admin' %}
-                            Администратор
-                            {% elif session.user_type == 'teacher' %}
-                            Преподаватель
-                            {% elif session.user_type == 'starosta' %}
-                            Староста
-                            {% elif session.user_type == 'student' %}
-                            Студент
-                            {% endif %}
-                        </strong>
-                    </div>
+                <h4>Выберите группу</h4>
+                <p class="mb-3">Введите название группы в поле поиска или выберите из списка</p>
+                <div class="text-muted small">
+                    <i class="bi bi-info-circle"></i> Примеры названий групп: ИСП-101, ПИ-21, КН-301
                 </div>
-            </div>
-            <div class="alert alert-info mt-3 mb-0">
-                <i class="bi bi-lightbulb"></i>
-                <strong>Совет:</strong> Для изменения расписания обратитесь к старосте или администратору
             </div>
         </div>
+        {% endif %}
     </div>
 
-    <!-- Футер -->
-    <footer class="footer fade-in">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h6>Техникум - Система расписания</h6>
-                    <p class="mb-0 text-muted">© 2024 Все права защищены</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="d-flex align-items-center justify-content-md-end">
-                        <div class="user-avatar me-3">
-                            {{ session.name[0] if session.name else '?' }}
-                        </div>
-                        <div class="text-start">
-                            <p class="mb-0" style="font-size: 0.9rem;">
-                                <strong>{{ session.name }}</strong><br>
-                                <small class="text-muted">
-                                    {% if session.user_type == 'admin' %}
-                                    Администратор
-                                    {% elif session.user_type == 'teacher' %}
-                                    Преподаватель
-                                    {% elif session.user_type == 'starosta' %}
-                                    Староста
-                                    {% elif session.user_type == 'student' %}
-                                    Студент
-                                    {% endif %}
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Функции для работы с вкладками дней
         function showDay(day) {
-            // Скрыть все расписания
-            document.querySelectorAll('.day-schedule').forEach(schedule => {
-                schedule.style.display = 'none';
-                schedule.classList.remove('active');
+            // Скрываем все расписания
+            document.querySelectorAll('.day-schedule').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
             });
 
-            // Убрать активный класс со всех вкладок
-            document.querySelectorAll('.day-tab').forEach(tab => {
-                tab.classList.remove('active');
+            // Убираем активный класс со всех вкладок
+            document.querySelectorAll('.day-tab').forEach(el => {
+                el.classList.remove('active');
             });
 
-            // Показать выбранное расписание
+            // Показываем выбранное расписание
             const scheduleElement = document.getElementById(day + 'Schedule');
             if (scheduleElement) {
-                scheduleElement.style.display = 'block';
                 scheduleElement.classList.add('active');
+                scheduleElement.style.display = 'block';
             }
 
-            // Добавить активный класс выбранной вкладке
+            // Добавляем активный класс выбранной вкладке
             event.target.classList.add('active');
         }
 
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            // Показать первый день по умолчанию
-            const firstDaySchedule = document.querySelector('.day-schedule.active');
-            if (firstDaySchedule) {
-                firstDaySchedule.style.display = 'block';
+        // Поиск групп
+        let searchTimeout;
+        document.getElementById('groupSearch').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                document.getElementById('searchResults').style.display = 'none';
+                return;
             }
 
-            // Анимация появления элементов
-            const fadeElements = document.querySelectorAll('.fade-in');
-            fadeElements.forEach((el, index) => {
-                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
-                                         el.classList.contains('delay-2') ? '0.2s' :
-                                         el.classList.contains('delay-3') ? '0.3s' : '0s';
-            });
+            searchTimeout = setTimeout(() => {
+                fetch(`/api/search_group?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(groups => {
+                        const resultsContainer = document.getElementById('searchResults');
+                        resultsContainer.innerHTML = '';
 
-            // Добавить обработчики клика для вкладок дней
-            document.querySelectorAll('.day-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const day = this.textContent.trim();
-                    showDay(day);
-                });
-            });
+                        if (groups.length === 0) {
+                            resultsContainer.innerHTML = '<div class="search-result-item text-muted">Группы не найдены</div>';
+                        } else {
+                            groups.forEach(group => {
+                                const item = document.createElement('div');
+                                item.className = 'search-result-item';
+                                item.textContent = group;
+                                item.onclick = () => {
+                                    document.getElementById('groupSearch').value = group;
+                                    resultsContainer.style.display = 'none';
+                                    loadSelectedGroup();
+                                };
+                                resultsContainer.appendChild(item);
+                            });
+                        }
+
+                        resultsContainer.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Ошибка поиска:', error);
+                    });
+            }, 300);
+        });
+
+        // Загрузка выбранной группы
+        function loadSelectedGroup() {
+            const groupName = document.getElementById('groupSearch').value.trim();
+            if (groupName) {
+                window.location.href = `/raspisanie?group=${encodeURIComponent(groupName)}`;
+            }
+        }
+
+        // Автозаполнение при нажатии Enter
+        document.getElementById('groupSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadSelectedGroup();
+            }
+        });
+
+        // Скрываем результаты поиска при клике вне поля
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.group-search')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Показываем первый день расписания
+            const firstDay = document.querySelector('.day-schedule.active');
+            if (firstDay) {
+                firstDay.style.display = 'block';
+            }
+
+            // Если есть выбранная группа, фокусируемся на поле поиска
+            const selectedGroup = "{{ selected_group }}";
+            if (selectedGroup) {
+                document.getElementById('groupSearch').value = selectedGroup;
+            }
         });
     </script>
 </body>
