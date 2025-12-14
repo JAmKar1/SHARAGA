@@ -1,101 +1,156 @@
 """
-Модуль для работы с расписанием
+Модуль для работы с расписанием (обновленная версия с группами)
 """
+import sqlite3
+import os
+import re
+import tempfile
+import pdfplumber
+from datetime import datetime
+from collections import defaultdict
 
 class ScheduleModule:
     def __init__(self):
-        self.schedule_data = {}
-        self.load_schedule()
+        self.db_path = 'university.db'
+        self.init_database()
 
-    def load_schedule(self):
-        """Загрузить данные расписания"""
-        self.schedule_data = {
-            1: {  # 1 курс
-                'Понедельник': [
-                    {'time': '09:00-10:30', 'subject': 'Математика', 'teacher': 'Петрова М.И.', 'room': '301'},
-                    {'time': '10:45-12:15', 'subject': 'Информатика', 'teacher': 'Иванов С.П.', 'room': '205'},
-                    {'time': '13:00-14:30', 'subject': 'Физика', 'teacher': 'Сидоров А.В.', 'room': '410'},
-                    {'time': '14:45-16:15', 'subject': 'История', 'teacher': 'Козлова Е.Н.', 'room': '105'}
-                ],
-                'Вторник': [
-                    {'time': '09:00-10:30', 'subject': 'Иностранный язык', 'teacher': 'Смирнова О.Л.', 'room': '208'},
-                    {'time': '10:45-12:15', 'subject': 'Физкультура', 'teacher': 'Николаев В.С.', 'room': 'Спортзал'},
-                    {'time': '13:00-14:30', 'subject': 'Программирование', 'teacher': 'Иванов С.П.', 'room': '305'}
-                ],
-                'Среда': [
-                    {'time': '09:00-10:30', 'subject': 'Математика', 'teacher': 'Петрова М.И.', 'room': '302'},
-                    {'time': '10:45-12:15', 'subject': 'Основы алгоритмов', 'teacher': 'Кузнецов Д.Н.', 'room': '206'}
-                ],
-                'Четверг': [
-                    {'time': '09:00-10:30', 'subject': 'Базы данных', 'teacher': 'Сидоров А.В.', 'room': '411'},
-                    {'time': '10:45-12:15', 'subject': 'Веб-дизайн', 'teacher': 'Козлова Е.Н.', 'room': '306'}
-                ],
-                'Пятница': [
-                    {'time': '09:00-10:30', 'subject': 'Физика', 'teacher': 'Сидоров А.В.', 'room': '410'},
-                    {'time': '10:45-12:15', 'subject': 'Классный час', 'teacher': 'Куратор', 'room': '105'}
-                ]
-            },
-            2: {  # 2 курс
-                'Понедельник': [
-                    {'time': '09:00-10:30', 'subject': 'Базы данных', 'teacher': 'Сидоров А.В.', 'room': '302'},
-                    {'time': '10:45-12:15', 'subject': 'Алгоритмы', 'teacher': 'Кузнецов Д.Н.', 'room': '206'},
-                    {'time': '13:00-14:30', 'subject': 'Веб-разработка', 'teacher': 'Козлова Е.Н.', 'room': '411'},
-                    {'time': '14:45-16:15', 'subject': 'Иностранный язык', 'teacher': 'Смирнова О.Л.', 'room': '106'}
-                ],
-                'Вторник': [
-                    {'time': '09:00-10:30', 'subject': 'Сети и коммуникации', 'teacher': 'Петров В.И.', 'room': '307'},
-                    {'time': '10:45-12:15', 'subject': 'Операционные системы', 'teacher': 'Иванов С.П.', 'room': '205'}
-                ]
-            },
-            3: {  # 3 курс
-                'Понедельник': [
-                    {'time': '09:00-10:30', 'subject': 'Мобильная разработка', 'teacher': 'Козлов Д.Н.', 'room': '303'},
-                    {'time': '10:45-12:15', 'subject': 'Тестирование ПО', 'teacher': 'Петрова М.И.', 'room': '207'},
-                    {'time': '13:00-14:30', 'subject': 'Сети и коммуникации', 'teacher': 'Петров В.И.', 'room': '412'},
-                    {'time': '14:45-16:15', 'subject': 'Экономика', 'teacher': 'Сидорова А.С.', 'room': '107'}
-                ]
-            },
-            4: {  # 4 курс
-                'Понедельник': [
-                    {'time': '09:00-10:30', 'subject': 'Дипломное проектирование', 'teacher': 'Иванов С.П.', 'room': '304'},
-                    {'time': '10:45-12:15', 'subject': 'Проектный менеджмент', 'teacher': 'Козлова Е.Н.', 'room': '208'},
-                    {'time': '13:00-14:30', 'subject': 'Карьера и трудоустройство', 'teacher': 'Николаева Т.В.', 'room': '413'},
-                    {'time': '14:45-16:15', 'subject': 'Консультации', 'teacher': 'Куратор', 'room': '108'}
-                ]
-            }
-        }
+    def init_database(self):
+        """Инициализация базы данных"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
 
+        # Таблица групп
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS schedule_groups (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL,
+            course INTEGER NOT NULL,
+            faculty TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # Таблица расписания
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS group_schedule (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            group_id INTEGER NOT NULL,
+            day_of_week TEXT NOT NULL,
+            lesson_number INTEGER NOT NULL,
+            time_start TEXT NOT NULL,
+            time_end TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            teacher TEXT NOT NULL,
+            room TEXT NOT NULL,
+            FOREIGN KEY (group_id) REFERENCES schedule_groups(id) ON DELETE CASCADE
+        )
+        ''')
+
+        conn.commit()
+        conn.close()
+
+    def get_connection(self):
+        """Получить соединение с БД"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    def get_all_groups(self):
+        """Получить список всех групп"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT name FROM schedule_groups ORDER BY course, name')
+        groups = [row['name'] for row in cursor.fetchall()]
+
+        conn.close()
+        return groups
+
+    def get_groups_by_course(self):
+        """Получить группы по курсам"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT course, name FROM schedule_groups ORDER BY course, name')
+        rows = cursor.fetchall()
+
+        groups_by_course = defaultdict(list)
+        for row in rows:
+            groups_by_course[row['course']].append(row['name'])
+
+        conn.close()
+        return dict(groups_by_course)
+
+    def get_schedule_for_group(self, group_name):
+        """Получить расписание для группы"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            # Получаем ID группы
+            cursor.execute('SELECT id FROM schedule_groups WHERE name = ?', (group_name,))
+            group = cursor.fetchone()
+
+            if not group:
+                return {}
+
+            group_id = group['id']
+
+            # Получаем расписание
+            cursor.execute('''
+            SELECT * FROM group_schedule 
+            WHERE group_id = ? 
+            ORDER BY 
+                CASE day_of_week
+                    WHEN 'Понедельник' THEN 1
+                    WHEN 'Вторник' THEN 2
+                    WHEN 'Среда' THEN 3
+                    WHEN 'Четверг' THEN 4
+                    WHEN 'Пятница' THEN 5
+                    WHEN 'Суббота' THEN 6
+                    ELSE 7
+                END,
+                lesson_number
+            ''', (group_id,))
+
+            schedule_data = {}
+            for row in cursor.fetchall():
+                day = row['day_of_week']
+                if day not in schedule_data:
+                    schedule_data[day] = []
+
+                schedule_data[day].append({
+                    'time': f"{row['time_start']}-{row['time_end']}",
+                    'subject': row['subject'],
+                    'teacher': row['teacher'],
+                    'room': row['room']
+                })
+
+            return schedule_data
+
+        except Exception as e:
+            print(f"❌ Ошибка получения расписания: {e}")
+            return {}
+        finally:
+            conn.close()
+
+    # Функции для обратной совместимости
     def get_schedule(self, course):
-        """Получить расписание для курса"""
-        return self.schedule_data.get(course, {})
-
-    def get_all_schedules(self):
-        """Получить все расписания"""
-        return self.schedule_data
+        """Старая функция для обратной совместимости"""
+        groups_by_course = self.get_groups_by_course()
+        if course in groups_by_course and groups_by_course[course]:
+            return self.get_schedule_for_group(groups_by_course[course][0])
+        return {}
 
     def get_course_days(self, course):
-        """Получить дни недели для курса"""
+        """Старая функция для обратной совместимости"""
         schedule = self.get_schedule(course)
-        return list(schedule.keys()) if schedule else []
+        return list(schedule.keys())
 
     def get_exams_schedule(self, course):
-        """Получить расписание экзаменов"""
-        exams = {
-            1: [
-                {'date': '25.12.2023', 'subject': 'Математика', 'teacher': 'Петрова М.И.', 'room': '301'},
-                {'date': '27.12.2023', 'subject': 'Информатика', 'teacher': 'Иванов С.П.', 'room': '205'},
-                {'date': '29.12.2023', 'subject': 'Физика', 'teacher': 'Сидоров А.В.', 'room': '410'}
-            ],
-            2: [
-                {'date': '26.12.2023', 'subject': 'Базы данных', 'teacher': 'Сидоров А.В.', 'room': '302'},
-                {'date': '28.12.2023', 'subject': 'Алгоритмы', 'teacher': 'Кузнецов Д.Н.', 'room': '206'}
-            ],
-            3: [
-                {'date': '22.12.2023', 'subject': 'Мобильная разработка', 'teacher': 'Козлов Д.Н.', 'room': '303'},
-                {'date': '24.12.2023', 'subject': 'Тестирование ПО', 'teacher': 'Петрова М.И.', 'room': '207'}
-            ],
-            4: [
-                {'date': '20.12.2023', 'subject': 'Защита диплома', 'teacher': 'Комиссия', 'room': 'Актовый зал'}
-            ]
-        }
-        return exams.get(course, [])
+        """Старая функция для обратной совместимости"""
+        # Возвращаем пустой список, так как экзамены хранятся в другой таблице
+        return []
+
+# Создаем глобальный экземпляр для импорта
+schedule_module = ScheduleModule()
