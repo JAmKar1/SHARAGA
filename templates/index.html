@@ -4,217 +4,685 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Техникум - Главная</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-blue: #4a6fa5; /* Приглушенный синий как в примере 1.2:0.4 */
+            --secondary-blue: #3a5885; /* Немного темнее */
+            --accent-teal: #4d8b8b; /* Приглушенный бирюзовый */
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
         }
 
         body {
-            background-color: #f5f5f5;
-            min-height: 100vh;
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
         }
 
-        /* Шапка */
-        .header {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* Навигация */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
         }
 
-        .logo {
-            font-size: 24px;
+        .navbar-brand {
             font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
         }
 
-        .user-info {
+        .navbar-brand i {
+            color: var(--accent-teal);
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Главный заголовок */
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        .welcome-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        /* Профиль пользователя */
+        .profile-section {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 40px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .profile-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .user-avatar-large {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .logout-btn {
-            background-color: rgba(255, 255, 255, 0.2);
+        .user-info-grid {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-teal);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .info-label {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            color: var(--dark-text);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--gradient-accent);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Контент */
-        .content {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .welcome {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .welcome h1 {
-            color: #283593;
-            margin-bottom: 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(77, 139, 139, 0.3);
+            margin-top: 10px;
         }
 
         /* Карточки разделов */
-        .sections-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+        .section-title {
+            text-align: center;
+            margin: 50px 0 40px;
+            color: var(--dark-text);
+        }
+
+        .section-title h2 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--light-text);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .section-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(74, 111, 165, 0.1);
             text-decoration: none;
             color: inherit;
             display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
         }
 
         .section-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--hover-shadow);
+            border-color: transparent;
         }
 
-        .section-icon {
-            font-size: 40px;
-            color: #283593;
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.1), rgba(77, 139, 139, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover .card-icon {
+            background: var(--gradient-primary);
+            color: white;
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--dark-text);
+        }
+
+        .card-description {
+            color: var(--light-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Футер */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
             margin-bottom: 15px;
         }
 
-        .section-title {
-            font-size: 20px;
+        /* Кнопка выхода */
+        .logout-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
         }
 
-        .section-desc {
-            color: #666;
-            line-height: 1.5;
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 111, 165, 0.4);
+            color: white;
+        }
+
+        /* Скрытые кнопки */
+        .hidden-nav-links {
+            display: none !important;
         }
 
         /* Адаптивность */
         @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
+            body {
+                padding-top: 60px;
             }
 
-            .sections-grid {
-                grid-template-columns: 1fr;
+            .welcome-title {
+                font-size: 2rem;
             }
+
+            .main-header {
+                padding: 30px 20px;
+            }
+
+            .user-info-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Сетка */
+        .row {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        .col-lg-4, .col-md-6 {
+            padding-left: 10px;
+            padding-right: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Шапка -->
-    <div class="header">
-        <div class="logo">Портал Техникума</div>
-        <div class="user-info">
-            <span>Вы вошли как: {{ user }}</span>
-            <a href="/logout" class="logout-btn">Выйти</a>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('profile') }}">
+                            <i class="bi bi-person me-1"></i>Профиль
+                        </a>
+                    </li>
+                    {% if user.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if user.user_type == 'starosta' or user.user_type == 'admin' %}
+                    <li class="nav-item hidden-nav-links">
+                        <a class="nav-link" href="{{ url_for('starosta') }}">
+                            <i class="bi bi-award me-1"></i>Староста
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item hidden-nav-links">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}">
+                            <i class="bi bi-calendar-week me-1"></i>Расписание
+                        </a>
+                    </li>
+                    <li class="nav-item hidden-nav-links">
+                        <a class="nav-link" href="{{ url_for('repetitorstvo') }}">
+                            <i class="bi bi-book me-1"></i>Репетиторство
+                        </a>
+                    </li>
+                    <!-- КНОПКА ПОДДЕРЖКИ - ИСПРАВЛЕНА ССЫЛКА -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/podderzhka">
+                            <i class="bi bi-question-circle me-1"></i>Поддержка
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 text-muted d-none d-md-block">
+                        <i class="bi bi-person-circle me-1"></i>{{ user.full_name }}
+                    </span>
+                    <a href="/logout" class="logout-btn">
+                        <i class="bi bi-box-arrow-right"></i>Выйти
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Контент -->
-    <div class="content">
-        <div class="welcome">
-            <h1>Добро пожаловать на внутренний портал!</h1>
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="main-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-10">
+                    <h1 class="welcome-title">Добро пожаловать, {{ user.full_name }}!</h1>
+                    <p class="welcome-subtitle">
+                        Выберите нужный раздел для работы в системе техникума
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Профиль -->
+        <div class="profile-section fade-in delay-1">
+            <div class="profile-header text-center">
+                <div class="user-avatar-large">
+                    {{ user.full_name[0] if user.full_name else 'Т' }}
+                </div>
+                <span class="role-badge">
+                    {% if user.user_type == 'admin' %}Администратор
+                    {% elif user.user_type == 'starosta' %}Староста
+                    {% elif user.user_type == 'teacher' %}Преподаватель
+                    {% else %}Студент{% endif %}
+                </span>
+            </div>
+
+            <div class="user-info-grid">
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="bi bi-person"></i>Полное имя
+                    </div>
+                    <div class="info-value">{{ user.full_name }}</div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="bi bi-shield-check"></i>Роль в системе
+                    </div>
+                    <div class="info-value">
+                        {% if user.user_type == 'admin' %}Администратор
+                        {% elif user.user_type == 'starosta' %}Староста
+                        {% elif user.user_type == 'teacher' %}Преподаватель
+                        {% else %}Студент{% endif %}
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="bi bi-person-circle"></i>Логин
+                    </div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+
+                {% if user.group %}
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="bi bi-people"></i>Учебная группа
+                    </div>
+                    <div class="info-value">{{ user.group }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Разделы -->
+        <div class="section-title fade-in delay-2">
+            <h2>Доступные разделы</h2>
             <p>Выберите нужный раздел для работы</p>
         </div>
 
-        <div class="sections-grid">
-            <!-- Карточка Старосты -->
-            <a href="/starosta" class="section-card">
-                <div class="section-icon">👨‍🎓</div>
-                <div class="section-title">Староста</div>
-                <div class="section-desc">
-                    Список студентов, отчеты, информация для старосты,
-                    мессенджер и другие инструменты управления группой
-                </div>
-            </a>
+        <div class="row mb-4">
+            {% if user.user_type == 'starosta' or user.user_type == 'admin' %}
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-3">
+                <a href="{{ url_for('starosta') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="card-title">Панель старосты</div>
+                    <div class="card-description">
+                        Управление группой, списки студентов, отчеты, мессенджер и другие инструменты для старосты
+                    </div>
+                </a>
+            </div>
+            {% endif %}
 
-            <!-- Карточка Расписания -->
-            <a href="/raspisanie" class="section-card">
-                <div class="section-icon">📅</div>
-                <div class="section-title">Расписание</div>
-                <div class="section-desc">
-                    Расписание занятий для всех курсов (1-4 курс),
-                    изменения в расписании, экзамены
-                </div>
-            </a>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-3">
+                <a href="{{ url_for('raspisanie') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-calendar-week"></i>
+                    </div>
+                    <div class="card-title">Расписание занятий</div>
+                    <div class="card-description">
+                        Расписание занятий для всех курсов, изменения в расписании, экзамены и сессии
+                    </div>
+                </a>
+            </div>
 
-            <!-- Карточка Репетиторства -->
-            <a href="/repetitorstvo" class="section-card">
-                <div class="section-icon">📚</div>
-                <div class="section-title">Репетиторство</div>
-                <div class="section-desc">
-                    Репетиторство по специальностям, запись на дополнительные
-                    занятия, помощь в учебе
-                </div>
-            </a>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-3">
+                <a href="{{ url_for('repetitorstvo') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+                    <div class="card-title">Репетиторство</div>
+                    <div class="card-description">
+                        Репетиторство по специальностям, запись на дополнительные занятия, помощь в учебе
+                    </div>
+                </a>
+            </div>
 
-            <!-- Карточка Мероприятий -->
-            <a href="/meropriyatiya" class="section-card">
-                <div class="section-icon">🎉</div>
-                <div class="section-title">Мероприятия</div>
-                <div class="section-desc">
-                    Список мероприятий техникума, культурные события,
-                    спортивные соревнования, конференции
-                </div>
-            </a>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-4">
+                <a href="{{ url_for('meropriyatiya') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="card-title">Мероприятия</div>
+                    <div class="card-description">
+                        Список мероприятий техникума, культурные события, спортивные соревнования, конференции
+                    </div>
+                </a>
+            </div>
 
-            <!-- Карточка Преподавателей -->
-            <a href="/prepodavateli" class="section-card">
-                <div class="section-icon">👨‍🏫</div>
-                <div class="section-title">Список преподавателей</div>
-                <div class="section-desc">
-                    Контакты преподавателей, расписание консультаций,
-                    внутренний мессенджер для общения
-                </div>
-            </a>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-4">
+                <a href="{{ url_for('prepodavateli') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div class="card-title">Преподаватели</div>
+                    <div class="card-description">
+                        Контакты преподавателей, расписание консультаций, информация о кафедрах и предметах
+                    </div>
+                </a>
+            </div>
 
-            <!-- Карточка Практики -->
-            <a href="/praktika" class="section-card">
-                <div class="section-icon">💼</div>
-                <div class="section-title">Практика</div>
-                <div class="section-desc">
-                    Информация о практиках, базы предприятий,
-                    документы для оформления, отчеты по практике
-                </div>
-            </a>
-
-            <!-- Карточка Поддержки -->
-            <a href="/podderzhka" class="section-card">
-                <div class="section-icon">🛠️</div>
-                <div class="section-title">Поддержка</div>
-                <div class="section-desc">
-                    Техническая поддержка портала, контакты администраторов,
-                    FAQ, отчеты об ошибках
-                </div>
-            </a>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-4">
+                <a href="{{ url_for('praktika') }}" class="section-card">
+                    <div class="card-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <div class="card-title">Практика</div>
+                    <div class="card-description">
+                        Информация о практиках, базы предприятий, документы для оформления, отчеты по практике
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
+
+    <!-- Футер -->
+    <footer class="footer fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="footer-logo">
+                        <i class="bi bi-building me-2"></i>Техникум
+                    </div>
+                    <p class="text-muted mb-0">
+                        Образовательная платформа © 2024<br>
+                        Все права защищены
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: var(--gradient-primary) !important;">
+                            <i class="bi bi-person text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <h6 class="mb-1">{{ user.full_name }}</h6>
+                            <small class="text-muted">
+                                {% if user.user_type == 'admin' %}Администратор
+                                {% elif user.user_type == 'starosta' %}Староста
+                                {% elif user.user_type == 'teacher' %}Преподаватель
+                                {% else %}Студент{% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация появления элементов с задержкой
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
+                                         el.classList.contains('delay-2') ? '0.2s' :
+                                         el.classList.contains('delay-3') ? '0.3s' :
+                                         el.classList.contains('delay-4') ? '0.4s' : '0s';
+            });
+        });
+    </script>
 </body>
 </html>

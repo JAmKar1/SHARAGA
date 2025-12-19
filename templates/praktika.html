@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практика | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-teal);
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Главный заголовок */
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        /* Иконка практики */
+        .practice-icon-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .practice-icon-wrapper {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.25),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .practice-icon-inner {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #ffffff, #f5f9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 32px;
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Карточки контента */
+        .content-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .content-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Карточки практики */
+        .practice-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--accent-teal);
+        }
+
+        .practice-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--hover-shadow);
+            border-color: transparent;
+        }
+
+        .practice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-accent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .practice-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .practice-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Заголовок раздела */
+        .section-header {
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .section-header i {
+            margin-right: 10px;
+        }
+
+        /* Статистика */
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-accent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .stats-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+            margin-bottom: 10px;
+        }
+
+        .stats-label {
+            color: var(--light-text);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Бейджи статусов */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #388e3c;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .status-planning {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #f57c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        /* Информационные метки */
+        .info-label {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            color: var(--dark-text);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        /* Список компаний */
+        .company-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .company-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .company-list li:last-child {
+            border-bottom: none;
+        }
+
+        .company-list li i {
+            color: var(--accent-teal);
+            font-size: 1rem;
+            min-width: 20px;
+        }
+
+        /* Карточки компаний */
+        .company-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-teal);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .company-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--secondary-blue);
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .company-details p {
+            margin: 5px 0;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .company-details i {
+            color: var(--accent-teal);
+            width: 16px;
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--light-text);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px dashed rgba(74, 111, 165, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: rgba(74, 111, 165, 0.3);
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            color: var(--dark-text);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            max-width: 500px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        /* Alert сообщения */
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        }
+
+        .alert-info {
+            border-left-color: var(--info-color);
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* Хлебные крошки */
+        .breadcrumb {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.15);
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.03) 0%, rgba(77, 139, 139, 0.03) 100%);
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        /* Футер */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer h6 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Счетчик практик */
+        .practice-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 15px;
+            background: rgba(74, 111, 165, 0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05) 0%, rgba(77, 139, 139, 0.05) 100%);
+            border-left: 4px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .info-card h5 i {
+            color: var(--accent-teal);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .main-header {
+                padding: 30px 20px;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+
+            .practice-icon-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+
+            .practice-icon-inner {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+
+            .stats-card {
+                padding: 20px;
+            }
+
+            .stats-number {
+                font-size: 2rem;
+            }
+
+            .practice-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-card {
+                padding: 15px;
+            }
+
+            .practice-card {
+                padding: 15px;
+            }
+
+            .company-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/praktika">
+                            <i class="bi bi-briefcase me-1"></i>Практика
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: var(--gradient-primary); color: white;">
+                                <i class="bi bi-person"></i>
+                        </div>
+                        <span class="text-muted" id="userName">Алексей Петров</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="/profile">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="/login">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="fade-in">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Производственная практика</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="main-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2 col-12 text-center mb-3 mb-md-0">
+                    <div class="practice-icon-container">
+                        <div class="practice-icon-wrapper">
+                            <div class="practice-icon-inner">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-12">
+                    <h1 class="display-6 mb-2">💼 Производственная практика</h1>
+                    <p class="lead mb-0">Информация о практиках, партнерских предприятиях и организациях. Получите ценный опыт работы!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row mb-4 fade-in delay-1">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="currentCount">2</div>
+                    <div class="stats-label">Текущие практики</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="completedCount">3</div>
+                    <div class="stats-label">Завершенные практики</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="studentsCount">85</div>
+                    <div class="stats-label">Всего студентов</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="totalCount">5</div>
+                    <div class="stats-label">Всего практик</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Текущие практики -->
+        <div class="content-card fade-in delay-2">
+            <h3 class="section-header mb-4">
+                <i class="bi bi-clock" style="color: var(--accent-teal);"></i>
+                Текущие практики
+                <span class="practice-counter">
+                    <i class="bi bi-briefcase"></i> <span id="currentCounter">2</span>
+                </span>
+            </h3>
+
+            <div class="row" id="currentPractices">
+                <!-- Текущие практики будут добавляться через JS -->
+            </div>
+        </div>
+
+        <!-- Завершенные практики -->
+        <div class="content-card fade-in delay-3">
+            <h3 class="section-header mb-4">
+                <i class="bi bi-check-circle" style="color: var(--success-color);"></i>
+                Завершенные практики
+                <span class="practice-counter">
+                    <i class="bi bi-briefcase"></i> <span id="completedCounter">3</span>
+                </span>
+            </h3>
+
+            <div class="row" id="completedPractices">
+                <!-- Завершенные практики будут добавляться через JS -->
+            </div>
+        </div>
+
+        <!-- Партнерские предприятия -->
+        <div class="content-card fade-in">
+            <h3 class="section-header mb-4">
+                <i class="bi bi-building" style="color: var(--info-color);"></i>
+                Партнерские предприятия
+                <span class="practice-counter">
+                    <i class="bi bi-handshake"></i> <span id="companiesCount">4</span> предприятия
+                </span>
+            </h3>
+
+            <div class="row" id="companiesList">
+                <!-- Компании будут добавляться через JS -->
+            </div>
+        </div>
+
+        <!-- Полезная информация -->
+        <div class="row mb-4 fade-in">
+            <div class="col-lg-6 mb-4">
+                <div class="content-card h-100">
+                    <h5 class="section-header">
+                        <i class="bi bi-file-earmark-text" style="color: #6f42c1;"></i>
+                        Документы для практики
+                    </h5>
+                    <ul class="company-list" id="documentsList">
+                        <!-- Документы будут добавляться через JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="content-card h-100">
+                    <h5 class="section-header">
+                        <i class="bi bi-calendar-check" style="color: #20c997;"></i>
+                        Важные даты
+                    </h5>
+                    <ul class="company-list" id="datesList">
+                        <!-- Даты будут добавляться через JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Информационная карточка -->
+        <div class="info-card fade-in">
+            <h5>
+                <i class="bi bi-info-circle"></i>
+                Информация о практике
+            </h5>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-briefcase text-primary"></i> <strong>Всего партнеров:</strong> <span id="partnersCount">4</span> предприятия</p>
+                    <p class="mb-2"><i class="bi bi-person-check text-success"></i> <strong>Ваш статус:</strong> <span id="currentUserName">Алексей Петров</span></p>
+                    <p class="mb-2"><i class="bi bi-calendar-check text-info"></i> <strong>Активных практик:</strong> <span id="activeCount">2</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-lightbulb text-warning"></i> Практика - важный этап профессионального становления</p>
+                    <p class="mb-2"><i class="bi bi-bell text-primary"></i> Следите за обновлениями информации</p>
+                    <p class="mb-0"><i class="bi bi-person-plus text-success"></i> Для участия обращайтесь к кураторам</p>
+                </div>
+            </div>
+            <div class="mt-4" style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 10px; border-left: 3px solid var(--accent-teal);">
+                <p class="mb-0">
+                    <i class="bi bi-lightbulb-fill" style="color: var(--accent-teal);"></i>
+                    <strong>Совет:</strong> Регулярно проверяйте этот раздел для получения актуальной информации о практиках.
+                    Для участия в практиках обращайтесь к кураторам групп или в деканат.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6>Техникум - Система производственной практики</h6>
+                    <p class="mb-0 text-muted">© 2024 Все права защищены</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: var(--gradient-primary);">
+                            <i class="bi bi-briefcase text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                <strong id="footerUserName">Алексей Петров</strong><br>
+                                <small class="text-muted">Просмотр практик</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Данные для страницы
+        const practiceData = {
+            current: [
+                {
+                    company: "ООО 'Технологии Будущего'",
+                    students: 20,
+                    period: "1 сентября - 30 ноября 2024",
+                    status: "Идет набор студентов",
+                    description: "Производственная практика по направлению 'Разработка программного обеспечения'",
+                    requirements: [
+                        "Знание Python/Java",
+                        "Базовые знания SQL",
+                        "Опыт работы с Git"
+                    ]
+                },
+                {
+                    company: "ПАО 'Инновационный Банк'",
+                    students: 15,
+                    period: "15 сентября - 15 декабря 2024",
+                    status: "Идет работа на предприятии",
+                    description: "Практика в области финансовых технологий и банковского ПО",
+                    requirements: [
+                        "Знание Java/C#",
+                        "Основы финансов",
+                        "Английский язык B1+"
+                    ]
+                }
+            ],
+            completed: [
+                {
+                    company: "ООО 'Софт-Девелопмент'",
+                    students: 25,
+                    period: "1 марта - 30 мая 2024",
+                    results: "Успешно защищены 25 отчетов, средний балл - 4.5",
+                    directions: [
+                        "Веб-разработка",
+                        "Работа с базами данных",
+                        "Мобильная разработка"
+                    ]
+                },
+                {
+                    company: "АО 'Телеком-Сервис'",
+                    students: 18,
+                    period: "15 февраля - 15 апреля 2024",
+                    results: "Успешно защищены 18 отчетов, средний балл - 4.7",
+                    directions: [
+                        "Сетевые технологии",
+                        "Беспроводные сети",
+                        "Кибербезопасность"
+                    ]
+                }
+            ],
+            companies: [
+                {
+                    name: "ООО 'Технологии Будущего'",
+                    address: "г. Москва, ул. Программистов, 15",
+                    phone: "+7 (495) 123-45-67",
+                    email: "hr@future-tech.ru",
+                    website: "www.future-tech.ru"
+                },
+                {
+                    name: "ПАО 'Инновационный Банк'",
+                    address: "г. Москва, Ленинский проспект, 32",
+                    phone: "+7 (495) 987-65-43",
+                    email: "practice@innobank.ru",
+                    website: "www.innobank.ru"
+                },
+                {
+                    name: "ООО 'Софт-Девелопмент'",
+                    address: "г. Москва, ул. Разработчиков, 8",
+                    phone: "+7 (495) 555-12-34",
+                    email: "info@softdev.ru",
+                    website: "www.softdev.ru"
+                },
+                {
+                    name: "АО 'Телеком-Сервис'",
+                    address: "г. Москва, ул. Связистов, 25",
+                    phone: "+7 (495) 777-88-99",
+                    email: "career@telecom-service.ru",
+                    website: "www.telecom-service.ru"
+                }
+            ],
+            documents: [
+                { name: "Положение о практике", type: "pdf", color: "#d32f2f" },
+                { name: "Шаблон дневника практики", type: "word", color: "#2b579a" },
+                { name: "Шаблон отчета", type: "word", color: "#2b579a" },
+                { name: "Требования к отчету", type: "pdf", color: "#d32f2f" },
+                { name: "Заявление на практику", type: "word", color: "#2b579a" }
+            ],
+            dates: [
+                { date: "15 ноября 2024", description: "Завершение текущих практик" },
+                { date: "20 ноября 2024", description: "Сдача отчетов по практике" },
+                { date: "25 ноября 2024", description: "Защита отчетов" },
+                { date: "1 декабря 2024", description: "Начало нового набора" },
+                { date: "10 декабря 2024", description: "Встреча с партнерами" }
+            ]
+        };
+
+        // Функция для обновления имени пользователя
+        function updateUserName() {
+            // Проверяем, есть ли сохраненное имя пользователя
+            let userName = localStorage.getItem('userName') || "Алексей Петров";
+
+            // Обновляем имя во всех местах
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('currentUserName').textContent = userName;
+            document.getElementById('footerUserName').textContent = userName;
+
+            return userName;
+        }
+
+        // Функция для создания карточки текущей практики
+        function createCurrentPracticeCard(practice) {
+            return `
+                <div class="col-lg-6 mb-4">
+                    <div class="practice-card">
+                        <div class="practice-card-title">
+                            <span>${practice.company}</span>
+                            <span class="status-badge status-active">
+                                <i class="bi bi-play-circle"></i> Активна
+                            </span>
+                        </div>
+
+                        <div class="practice-info">
+                            <div class="info-label">Студентов на практике:</div>
+                            <div class="info-value">
+                                <i class="bi bi-people me-2"></i> ${practice.students} студентов
+                            </div>
+
+                            <div class="info-label">Период практики:</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-date me-2"></i> ${practice.period}
+                            </div>
+
+                            <div class="info-label">Статус:</div>
+                            <div class="info-value">
+                                <i class="bi bi-info-circle me-2"></i> ${practice.status}
+                            </div>
+
+                            <div class="info-label">Описание:</div>
+                            <div class="info-value mb-3">
+                                ${practice.description}
+                            </div>
+
+                            <div class="info-label">Требования к студентам:</div>
+                            <ul class="company-list">
+                                ${practice.requirements.map(req => `<li><i class="bi bi-check-circle"></i> ${req}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Функция для создания карточки завершенной практики
+        function createCompletedPracticeCard(practice) {
+            return `
+                <div class="col-lg-6 mb-4">
+                    <div class="practice-card">
+                        <div class="practice-card-title">
+                            <span>${practice.company}</span>
+                            <span class="status-badge status-completed">
+                                <i class="bi bi-check-circle"></i> Завершена
+                            </span>
+                        </div>
+
+                        <div class="practice-info">
+                            <div class="info-label">Студентов на практике:</div>
+                            <div class="info-value">
+                                <i class="bi bi-people me-2"></i> ${practice.students} студентов
+                            </div>
+
+                            <div class="info-label">Период практики:</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-date me-2"></i> ${practice.period}
+                            </div>
+
+                            <div class="info-label">Результаты:</div>
+                            <div class="info-value mb-3">
+                                <i class="bi bi-graph-up me-2"></i> ${practice.results}
+                            </div>
+
+                            <div class="info-label">Основные направления:</div>
+                            <ul class="company-list">
+                                ${practice.directions.map(dir => `<li><i class="bi bi-code-slash"></i> ${dir}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Функция для создания карточки компании
+        function createCompanyCard(company) {
+            return `
+                <div class="col-lg-6 mb-4">
+                    <div class="company-card">
+                        <div class="company-name">${company.name}</div>
+                        <div class="company-details">
+                            <p><i class="bi bi-geo-alt"></i> ${company.address}</p>
+                            <p><i class="bi bi-phone"></i> ${company.phone}</p>
+                            <p><i class="bi bi-envelope"></i> ${company.email}</p>
+                            <p><i class="bi bi-globe"></i> ${company.website}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Функция для создания элемента документа
+        function createDocumentItem(doc) {
+            const iconClass = doc.type === 'pdf' ? 'bi-file-pdf' : 'bi-file-word';
+            return `<li><i class="bi ${iconClass}" style="color: ${doc.color};"></i> ${doc.name} (скачать)</li>`;
+        }
+
+        // Функция для создания элемента даты
+        function createDateItem(dateItem) {
+            return `<li><i class="bi bi-calendar-event" style="color: var(--accent-teal);"></i>
+                    <strong>${dateItem.date}</strong> - ${dateItem.description}</li>`;
+        }
+
+        // Функция для обновления статистики
+        function updateStatistics() {
+            // Рассчитываем общее количество студентов
+            let totalStudents = 0;
+            practiceData.current.forEach(p => totalStudents += p.students);
+            practiceData.completed.forEach(p => totalStudents += p.students);
+
+            // Обновляем счетчики
+            document.getElementById('currentCount').textContent = practiceData.current.length;
+            document.getElementById('completedCount').textContent = practiceData.completed.length;
+            document.getElementById('studentsCount').textContent = totalStudents;
+            document.getElementById('totalCount').textContent = practiceData.current.length + practiceData.completed.length;
+            document.getElementById('currentCounter').textContent = practiceData.current.length;
+            document.getElementById('completedCounter').textContent = practiceData.completed.length;
+            document.getElementById('companiesCount').textContent = practiceData.companies.length;
+            document.getElementById('partnersCount').textContent = practiceData.companies.length;
+            document.getElementById('activeCount').textContent = practiceData.current.length;
+
+            // Обновляем динамические данные
+            document.getElementById('currentPractices').innerHTML = practiceData.current.map(createCurrentPracticeCard).join('');
+            document.getElementById('completedPractices').innerHTML = practiceData.completed.map(createCompletedPracticeCard).join('');
+            document.getElementById('companiesList').innerHTML = practiceData.companies.map(createCompanyCard).join('');
+            document.getElementById('documentsList').innerHTML = practiceData.documents.map(createDocumentItem).join('');
+            document.getElementById('datesList').innerHTML = practiceData.dates.map(createDateItem).join('');
+        }
+
+        // Функция для сохранения имени пользователя
+        function saveUserName() {
+            const newName = prompt("Введите ваше имя:", localStorage.getItem('userName') || "Алексей Петров");
+            if (newName && newName.trim() !== "") {
+                localStorage.setItem('userName', newName.trim());
+                updateUserName();
+                alert("Имя пользователя изменено!");
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обновляем имя пользователя
+            updateUserName();
+
+            // Обновляем статистику и данные
+            updateStatistics();
+
+            // Добавляем обработчики событий для имени пользователя
+            document.getElementById('userName').addEventListener('click', function(e) {
+                e.preventDefault();
+                saveUserName();
+            });
+
+            // Добавляем пункт для изменения имени в выпадающем меню
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            const changeNameItem = document.createElement('li');
+            changeNameItem.innerHTML = `<a class="dropdown-item" href="#" id="changeNameBtn"><i class="bi bi-pencil me-2"></i>Изменить имя</a>`;
+            dropdownMenu.insertBefore(changeNameItem, dropdownMenu.firstChild);
+
+            document.getElementById('changeNameBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                saveUserName();
+            });
+
+            // Анимация появления
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
+                                         el.classList.contains('delay-2') ? '0.2s' :
+                                         el.classList.contains('delay-3') ? '0.3s' : '0s';
+            });
+
+            // Имитация загрузки данных
+            setTimeout(() => {
+                document.querySelectorAll('.practice-card').forEach(card => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                });
+            }, 300);
+
+            // Убираем кнопки фильтрации если они были добавлены в предыдущей версии
+            const filterContainer = document.querySelector('.btn-group');
+            if (filterContainer) {
+                filterContainer.remove();
+            }
+        });
+    </script>
+</body>
+</html>
