@@ -10,7 +10,7 @@
 
 ## 🌐 Демо
 
-[Посмотреть демо](https://your-demo-link.com) • [Исходный код](https://github.com/your-username/tech-portal)
+[Посмотреть демо](good0219.pythonanywhere.com) • [Исходный код](https://github.com/your-username/tech-portal)
 
 ## 📋 Содержание
 - [✨ Особенности](#-особенности)
