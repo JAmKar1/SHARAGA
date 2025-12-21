@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление расписанием | Админ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #4a6fa5, #3a5885);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .upload-form {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #adb5bd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}">Расписание</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_schedule') }}">Управление расписанием</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}">Пользователи</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Выйти
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Флэш-сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message|safe }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Заголовок -->
+        <div class="content-card">
+            <h1 class="mb-3"><i class="bi bi-gear text-primary"></i> Управление расписанием</h1>
+            <p class="text-muted">Загрузка и управление PDF файлами расписания</p>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <h3><i class="bi bi-people"></i></h3>
+                    <h4>{{ total_groups }}</h4>
+                    <p>Всего групп</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    <h3><i class="bi bi-file-pdf"></i></h3>
+                    <h4>{{ pdf_schedules|length }}</h4>
+                    <p>Загружено расписаний</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stats-card" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+                    <h3><i class="bi bi-info-circle"></i></h3>
+                    <p>Администраторы могут загружать PDF файлы расписания для каждой группы.
+                       Студенты могут просматривать и скачивать эти файлы.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма загрузки -->
+        <div class="content-card">
+            <h4 class="mb-4"><i class="bi bi-cloud-upload text-primary"></i> Загрузить новое расписание</h4>
+            <form action="{{ url_for('upload_schedule') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="group_name" class="form-label">Выберите группу</label>
+                        <select class="form-select" id="group_name" name="group_name" required>
+                            <option value="">Выберите группу...</option>
+                            {% for group in all_groups %}
+                            <option value="{{ group }}">{{ group }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Или введите новую группу ниже</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="new_group" class="form-label">Новая группа</label>
+                        <input type="text" class="form-control" id="new_group" name="new_group"
+                               placeholder="ИСП-101, ПИ-21 и т.д.">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="schedule_file" class="form-label">PDF файл</label>
+                        <input type="file" class="form-control" name="schedule_file" accept=".pdf" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Важно:</strong> При загрузке нового расписания для существующей группы
+                            старое расписание будет заменено.
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-upload me-2"></i>Загрузить расписание
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Список загруженных расписаний -->
+        <div class="content-card">
+            <h4 class="mb-4"><i class="bi bi-list-check text-primary"></i> Загруженные расписания</h4>
+
+            {% if pdf_schedules %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Группа</th>
+                            <th>Файл</th>
+                            <th>Дата загрузки</th>
+                            <th>Загрузил</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in pdf_schedules %}
+                        <tr>
+                            <td class="align-middle">
+                                <strong>{{ schedule.group_name }}</strong>
+                            </td>
+                            <td class="align-middle">
+                                <i class="bi bi-file-pdf text-danger"></i>
+                                {{ schedule.original_filename }}
+                            </td>
+                            <td class="align-middle">
+                                <i class="bi bi-calendar"></i> {{ schedule.upload_date }}
+                            </td>
+                            <td class="align-middle">
+                                {% if schedule.uploaded_by_name %}
+                                <i class="bi bi-person"></i> {{ schedule.uploaded_by_name }}
+                                {% else %}
+                                <span class="text-muted">Неизвестно</span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('view_schedule', group_name=schedule.group_name) }}"
+                                       class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('download_schedule', group_name=schedule.group_name) }}"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    <form action="{{ url_for('delete_schedule', schedule_id=schedule.id) }}"
+                                          method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Удалить расписание для группы {{ schedule.group_name }}?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-file-earmark-x"></i>
+                </div>
+                <h4>Нет загруженных расписаний</h4>
+                <p class="mb-3">Используйте форму выше для загрузки первого расписания</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Список всех групп -->
+        <div class="content-card">
+            <h4 class="mb-4"><i class="bi bi-people text-primary"></i> Все группы</h4>
+            <div class="row">
+                {% for course, groups in groups_by_course.items() %}
+                <div class="col-md-3 mb-4">
+                    <h5>{{ course }} курс</h5>
+                    <ul class="list-group">
+                        {% for group in groups %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ group }}
+                            <a href="{{ url_for('raspisanie', group=group) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Автоматическое заполнение поля новой группы при выборе из списка
+        document.getElementById('group_name').addEventListener('change', function() {
+            const selectedGroup = this.value;
+            if (selectedGroup) {
+                document.getElementById('new_group').value = selectedGroup;
+            }
+        });
+    </script>
+</body>
+</html>

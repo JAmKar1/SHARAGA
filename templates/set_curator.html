@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка куратора | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .curator-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+        .btn-curator {
+            background: linear-gradient(135deg, #4d8b8b, #3d6d6d);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            border: none;
+        }
+        .btn-curator:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(77, 139, 139, 0.2);
+        }
+        .nav-back {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <a href="{{ url_for('profile') }}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Назад к профилю
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="curator-card">
+            <h2 class="mb-4 text-center">
+                <i class="bi bi-person-badge"></i> Настройка статуса куратора
+            </h2>
+
+            {% if user.is_curator and user.curator_group %}
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle"></i>
+                <strong>Вы являетесь куратором группы {{ user.curator_group }}</strong>
+                <p class="mb-0 mt-2">
+                    У вас есть доступ к панели управления этой группой (общий интерфейс со старостой группы).
+                </p>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="{{ url_for('starosta') }}" class="btn btn-success btn-lg">
+                    <i class="bi bi-people"></i> Перейти в панель управления группой
+                </a>
+
+                <form method="POST" action="{{ url_for('set_curator') }}">
+                    <input type="hidden" name="action" value="remove">
+                    <button type="submit" class="btn btn-outline-danger btn-lg w-100 mt-2">
+                        <i class="bi bi-x-circle"></i> Перестать быть куратором
+                    </button>
+                </form>
+            </div>
+
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Вы не являетесь куратором</strong>
+                <p class="mb-0 mt-2">
+                    Если вы курируете какую-либо группу, введите её название ниже.
+                </p>
+            </div>
+
+            <form method="POST" action="{{ url_for('set_curator') }}">
+                <input type="hidden" name="action" value="set">
+
+                <div class="mb-3">
+                    <label for="group_name" class="form-label">
+                        <i class="bi bi-people"></i> Название группы
+                    </label>
+                    <input type="text"
+                           class="form-control form-control-lg"
+                           id="group_name"
+                           name="group_name"
+                           placeholder="Например: ПИ-21, ИС-22, ИСП-319"
+                           required>
+                    <div class="form-text">
+                        Введите точное название группы, которую вы курируете
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check-circle"></i> Стать куратором
+                    </button>
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> Отмена
+                    </a>
+                </div>
+            </form>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <div class="alert alert-light">
+                <h5><i class="bi bi-question-circle"></i> Что дает статус куратора?</h5>
+                <ul class="mb-0">
+                    <li><strong>Доступ к панели управления группой {{ user.curator_group if user.curator_group else '[вашей группы]' }}</strong></li>
+                    <li>Просмотр информации о студентах группы</li>
+                    <li>Доступ к отчетам по успеваемости и посещаемости</li>
+                    <li>Возможность загружать учебные материалы</li>
+                    <li><strong>Внимание:</strong> Вы будете использовать тот же интерфейс, что и староста группы</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
