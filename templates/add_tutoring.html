@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить репетиторство | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-teal);
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Главный заголовок */
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        /* Иконка репетиторства */
+        .tutor-icon-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .tutor-icon-wrapper {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.25),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .tutor-icon-inner {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #ffffff, #f5f9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 32px;
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Карточки контента */
+        .content-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .content-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05) 0%, rgba(77, 139, 139, 0.05) 100%);
+            border-left: 4px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .info-card h5 i {
+            color: var(--accent-teal);
+        }
+
+        /* Форма создания репетиторства */
+        .form-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(74, 111, 165, 0.1);
+            border: 2px solid rgba(74, 111, 165, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .form-card:hover {
+            border-color: rgba(74, 111, 165, 0.25);
+            box-shadow: 0 6px 25px rgba(74, 111, 165, 0.15);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid rgba(74, 111, 165, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark-text);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+            background: white;
+            outline: none;
+        }
+
+        .form-input-group {
+            position: relative;
+        }
+
+        .form-input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+            z-index: 10;
+            font-size: 1.1rem;
+        }
+
+        .form-input-group input,
+        .form-input-group textarea,
+        .form-input-group select {
+            padding-left: 45px;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .form-hint {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Кнопки */
+        .btn-primary-custom {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 111, 165, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Валидация */
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Хлебные крошки */
+        .breadcrumb {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.15);
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.03) 0%, rgba(77, 139, 139, 0.03) 100%);
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        /* Футер */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer h6 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Alert сообщения */
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+
+        .alert-danger {
+            border-left-color: var(--danger-color);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        }
+
+        /* Полезная информация карточка */
+        .tip-card {
+            background: linear-gradient(135deg, rgba(255, 248, 225, 0.9) 0%, rgba(255, 243, 205, 0.9) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid rgba(255, 193, 7, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--warning-color);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .main-header {
+                padding: 30px 20px;
+            }
+
+            .content-card,
+            .form-card {
+                padding: 20px;
+            }
+
+            .tutor-icon-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+
+            .tutor-icon-inner {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Контейнер для формы */
+        .form-container {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        /* Секции формы */
+        .section-title {
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(74, 111, 165, 0.1);
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Группы формы */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        /* Действия формы */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(74, 111, 165, 0.1);
+        }
+
+        @media (max-width: 576px) {
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .form-actions > * {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Полезный совет */
+        .useful-tip {
+            background: linear-gradient(135deg, rgba(233, 236, 239, 0.2), rgba(248, 249, 250, 0.2));
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent-teal);
+        }
+
+        .useful-tip p {
+            margin: 0;
+            color: var(--dark-text);
+            font-size: 0.95rem;
+        }
+
+        .useful-tip strong {
+            color: var(--accent-teal);
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    {% if session.user_type == 'starosta' or session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('starosta') }}">
+                            <i class="bi bi-person-badge me-1"></i>Староста
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raspisanie') }}">
+                            <i class="bi bi-calendar-week me-1"></i>Расписание
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('repetitorstvo') }}">
+                            <i class="bi bi-mortarboard me-1"></i>Репетиторство
+                        </a>
+                    </li>
+                    {% if session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: var(--gradient-primary); color: white;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <span class="text-muted">{{ session.name }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="fade-in">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('repetitorstvo') }}">Репетиторство</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Добавить репетиторство</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="main-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2 col-12 text-center mb-3 mb-md-0">
+                    <div class="tutor-icon-container">
+                        <div class="tutor-icon-wrapper">
+                            <div class="tutor-icon-inner">
+                                <i class="bi bi-mortarboard-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-12">
+                    <h1 class="display-6 mb-2">🎓 Добавить репетиторство</h1>
+                    <p class="lead mb-0">Создайте новое репетиторство для помощи студентам. Заполните информацию о предмете, времени и условиях проведения занятий.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom alert-dismissible fade show mt-3 fade-in" role="alert">
+                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Форма создания репетиторства -->
+        <div class="form-container fade-in delay-1">
+            <h2 class="section-title">
+                <i class="bi bi-pencil-square" style="color: var(--primary-blue);"></i>
+                Заполните информацию о репетиторстве
+            </h2>
+
+            <form method="POST" action="/repetitorstvo/add" id="createTutorForm" onsubmit="return validateForm()">
+                <!-- Основная информация -->
+                <div class="form-card">
+                    <h5 class="mb-4" style="color: var(--primary-blue);">
+                        <i class="bi bi-info-circle"></i> Основная информация
+                    </h5>
+
+                    <!-- Предмет -->
+                    <div class="form-group">
+                        <label for="subject" class="form-label required">Предмет</label>
+                        <div class="form-input-group">
+                            <i class="bi bi-book"></i>
+                            <input type="text" id="subject" name="subject" class="form-input"
+                                   placeholder="Введите название предмета" required>
+                        </div>
+                        <div class="form-hint">Например: Математика, Физика, Программирование, Английский язык</div>
+                        <div id="subjectError" class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Описание -->
+                    <div class="form-group">
+                        <label for="description" class="form-label">Описание</label>
+                        <div class="form-input-group">
+                            <i class="bi bi-text-paragraph"></i>
+                            <textarea id="description" name="description" class="form-input"
+                                      placeholder="Опишите содержание занятий, формат проведения, цели и ожидаемые результаты"></textarea>
+                        </div>
+                        <div class="form-hint">Расскажите подробно, что будут изучать студенты на ваших занятиях</div>
+                    </div>
+                </div>
+
+                <!-- Расписание -->
+                <div class="form-card">
+                    <h5 class="mb-4" style="color: var(--accent-teal);">
+                        <i class="bi bi-calendar-check"></i> Расписание занятий
+                    </h5>
+
+                    <!-- Дни занятий -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="days" class="form-label required">Дни занятий</label>
+                                <div class="form-input-group">
+                                    <i class="bi bi-calendar-week"></i>
+                                    <input type="text" id="days" name="days" class="form-input"
+                                           placeholder="Например: Понедельник, Среда, Пятница" required>
+                                </div>
+                                <div class="form-hint">Укажите дни недели, когда будут проходить занятия</div>
+                                <div id="daysError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <!-- Время -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="time" class="form-label required">Время</label>
+                                <div class="form-input-group">
+                                    <i class="bi bi-clock"></i>
+                                    <input type="text" id="time" name="time" class="form-input"
+                                           placeholder="Например: 15:00-17:00" required>
+                                </div>
+                                <div class="form-hint">Укажите время начала и окончания занятий</div>
+                                <div id="timeError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Место и условия -->
+                <div class="form-card">
+                    <h5 class="mb-4" style="color: var(--primary-blue);">
+                        <i class="bi bi-geo-alt"></i> Место и условия
+                    </h5>
+
+                    <div class="row">
+                        <!-- Место проведения -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="room" class="form-label required">Аудитория/место</label>
+                                <div class="form-input-group">
+                                    <i class="bi bi-building"></i>
+                                    <input type="text" id="room" name="room" class="form-input"
+                                           placeholder="Например: Аудитория 302 или Библиотека" required>
+                                </div>
+                                <div class="form-hint">Где будут проходить занятия?</div>
+                                <div id="roomError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <!-- Стоимость -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="price" class="form-label required">Стоимость</label>
+                                <div class="form-input-group">
+                                    <i class="bi bi-cash"></i>
+                                    <input type="text" id="price" name="price" class="form-input"
+                                           placeholder="Например: Бесплатно или 500 руб./час" required>
+                                </div>
+                                <div class="form-hint">Укажите стоимость занятий или напишите "Бесплатно"</div>
+                                <div id="priceError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Количество мест -->
+                    <div class="form-group">
+                        <label for="max_students" class="form-label">Максимум студентов</label>
+                        <div class="form-input-group">
+                            <i class="bi bi-people"></i>
+                            <input type="number" id="max_students" name="max_students"
+                                   class="form-input" value="10" min="1" max="50">
+                        </div>
+                        <div class="form-hint">Сколько студентов могут записаться на ваше репетиторство (от 1 до 50)</div>
+                    </div>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="form-actions">
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="bi bi-check-lg"></i> Создать репетиторство
+                        </button>
+                        <a href="{{ url_for('repetitorstvo') }}" class="btn-secondary-custom">
+                            <i class="bi bi-arrow-left"></i> Назад к списку
+                        </a>
+                    </div>
+                    <div class="text-muted">
+                        <small>Создаёт: <strong>{{ session.name }}</strong> | Тип: <strong>{{ session.user_type }}</strong></small>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Карточка с полезной информацией -->
+        <div class="tip-card fade-in delay-2">
+            <h5 class="mb-3">
+                <i class="bi bi-lightbulb" style="color: var(--warning-color);"></i>
+                Полезная информация для преподавателей
+            </h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <ul style="padding-left: 20px; margin-bottom: 0;">
+                        <li class="mb-2"><strong>Обязательные поля</strong> отмечены красной звездочкой *</li>
+                        <li class="mb-2">После создания репетиторства студенты смогут записываться на него</li>
+                        <li class="mb-2">Вы сможете управлять списком записавшихся студентов</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul style="padding-left: 20px; margin-bottom: 0;">
+                        <li class="mb-2">Указывайте точное время и место проведения занятий</li>
+                        <li class="mb-2">Детальное описание привлекает больше студентов</li>
+                        <li class="mb-0">Все созданные репетиторства проходят модерацию</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="useful-tip mt-4">
+                <p>💡 <strong>Совет:</strong> Добавьте подробное описание и укажите конкретные темы, которые будут изучаться. Это поможет студентам понять, подходит ли им ваше репетиторство.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6>Техникум - Система репетиторства</h6>
+                    <p class="mb-0 text-muted">© 2025 Все права защищены</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: var(--gradient-primary);">
+                            <i class="bi bi-mortarboard text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                <strong>{{ session.name }}</strong><br>
+                                <small class="text-muted">Добавление репетиторства</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function validateForm() {
+            let isValid = true;
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+
+            // Проверка предмета
+            const subject = document.getElementById('subject').value.trim();
+            if (!subject) {
+                document.getElementById('subject').classList.add('is-invalid');
+                document.getElementById('subjectError').textContent = 'Введите название предмета';
+                isValid = false;
+            }
+
+            // Проверка дней
+            const days = document.getElementById('days').value.trim();
+            if (!days) {
+                document.getElementById('days').classList.add('is-invalid');
+                document.getElementById('daysError').textContent = 'Укажите дни проведения занятий';
+                isValid = false;
+            }
+
+            // Проверка времени
+            const time = document.getElementById('time').value.trim();
+            if (!time) {
+                document.getElementById('time').classList.add('is-invalid');
+                document.getElementById('timeError').textContent = 'Укажите время проведения занятий';
+                isValid = false;
+            }
+
+            // Проверка аудитории
+            const room = document.getElementById('room').value.trim();
+            if (!room) {
+                document.getElementById('room').classList.add('is-invalid');
+                document.getElementById('roomError').textContent = 'Укажите место проведения занятий';
+                isValid = false;
+            }
+
+            // Проверка стоимости
+            const price = document.getElementById('price').value.trim();
+            if (!price) {
+                document.getElementById('price').classList.add('is-invalid');
+                document.getElementById('priceError').textContent = 'Укажите стоимость занятий';
+                isValid = false;
+            }
+
+            // Проверка количества студентов
+            const maxStudents = document.getElementById('max_students').value;
+            if (maxStudents < 1 || maxStudents > 50) {
+                document.getElementById('max_students').classList.add('is-invalid');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                // Прокручиваем к первой ошибке
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+
+            return isValid;
+        }
+
+        // Автоматическое скрытие flash сообщений
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            // Анимация появления
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
+                                         el.classList.contains('delay-2') ? '0.2s' : '0s';
+            });
+
+            // Подтверждение отмены при наличии изменений
+            const cancelBtn = document.querySelector('.btn-secondary-custom');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function(e) {
+                    if (formHasChanges()) {
+                        if (!confirm('У вас есть несохраненные изменения. Вы уверены, что хотите выйти?')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+            // Подсветка обязательных полей при фокусе
+            const requiredInputs = document.querySelectorAll('input[required], textarea[required]');
+            requiredInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                    this.style.boxShadow = '0 0 0 0.25rem rgba(74, 111, 165, 0.25)';
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.value.trim()) {
+                        this.style.borderColor = 'var(--success-color)';
+                    } else {
+                        this.style.borderColor = 'var(--danger-color)';
+                    }
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+
+        // Проверка изменений в форме
+        function formHasChanges() {
+            const form = document.getElementById('createTutorForm');
+            if (!form) return false;
+
+            const inputs = form.querySelectorAll('input, textarea');
+            for (let input of inputs) {
+                if (input.defaultValue !== input.value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Валидация в реальном времени
+        document.getElementById('subject')?.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('subjectError').textContent = 'Введите название предмета';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('days')?.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('daysError').textContent = 'Укажите дни проведения занятий';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('time')?.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('timeError').textContent = 'Укажите время проведения занятий';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('room')?.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('roomError').textContent = 'Укажите место проведения занятий';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('price')?.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('priceError').textContent = 'Укажите стоимость занятий';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    </script>
+</body>
+</html>

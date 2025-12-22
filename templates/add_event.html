@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить мероприятие | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #4a6fa5, #3a5885);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, #4a6fa5, #3a5885);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid rgba(74, 111, 165, 0.2);
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a6fa5, #3a5885);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 111, 165, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            margin-top: 5px;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('meropriyatiya') }}">
+                            <i class="bi bi-calendar-event me-1"></i>Мероприятия
+                        </a>
+                    </li>
+                    {% if session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: linear-gradient(135deg, #4a6fa5, #3a5885); color: white;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <span class="text-muted">{{ session.name }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="main-header">
+            <h1 class="display-6 mb-2">🎉 Добавить новое мероприятие</h1>
+            <p class="lead mb-0">Заполните форму ниже, чтобы добавить новое мероприятие</p>
+        </div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Форма добавления мероприятия -->
+        <div class="form-container">
+            <form method="POST" action="{{ url_for('add_event') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="title" class="form-label required">Название мероприятия</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Например: День открытых дверей" required>
+                        <div class="help-text">Укажите краткое и понятное название</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="category" class="form-label required">Категория</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="Учебное">Учебное</option>
+                            <option value="Культурное">Культурное</option>
+                            <option value="Спортивное">Спортивное</option>
+                            <option value="Научное">Научное</option>
+                            <option value="Общее">Общее</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="date" class="form-label required">Дата</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                        <div class="help-text">Дата проведения мероприятия</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="time" class="form-label required">Время</label>
+                        <input type="time" class="form-control" id="time" name="time" required>
+                        <div class="help-text">Время начала мероприятия</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="location" class="form-label required">Место проведения</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                               placeholder="Например: Актовый зал, аудитория 301" required>
+                        <div class="help-text">Укажите точное место проведения</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="organizer" class="form-label required">Организатор</label>
+                        <input type="text" class="form-control" id="organizer" name="organizer"
+                               placeholder="Например: Администрация, Студенческий совет" required>
+                        <div class="help-text">Кто организует мероприятие</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label required">Описание</label>
+                    <textarea class="form-control" id="description" name="description"
+                              rows="4" placeholder="Подробное описание мероприятия..." required></textarea>
+                    <div class="help-text">Опишите цели, задачи и содержание мероприятия</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="status" class="form-label">Статус</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="Запланировано">Запланировано</option>
+                            <option value="Предстоящее">Предстоящее</option>
+                            <option value="Текущее">Текущее</option>
+                            <option value="Завершено">Завершено</option>
+                            <option value="Отменено">Отменено</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="max_participants" class="form-label">Макс. участников</label>
+                        <input type="number" class="form-control" id="max_participants" name="max_participants"
+                               placeholder="Например: 100" min="1">
+                        <div class="help-text">Оставьте пустым, если нет ограничений</div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="duration" class="form-label">Продолжительность</label>
+                        <input type="text" class="form-control" id="duration" name="duration"
+                               placeholder="Например: 2 часа" value="2 часа">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="requirements" class="form-label">Требования к участникам</label>
+                    <textarea class="form-control" id="requirements" name="requirements"
+                              rows="3" placeholder="Требования для участия (если есть)..."></textarea>
+                    <div class="help-text">Например: специальная подготовка, наличие материалов и т.д.</div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('meropriyatiya') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Назад к мероприятиям
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Добавить мероприятие
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6>Техникум - Система мероприятий</h6>
+                    <p class="mb-0 text-muted">© 2025 Все права защищены</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: linear-gradient(135deg, #4a6fa5, #3a5885);">
+                            <i class="bi bi-calendar-event text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                <strong>{{ session.name }}</strong><br>
+                                <small class="text-muted">Добавление мероприятия</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Устанавливаем минимальную дату как сегодня
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('date');
+
+            if (dateInput) {
+                dateInput.min = today;
+            }
+
+            // Автоматическое скрытие flash сообщений
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

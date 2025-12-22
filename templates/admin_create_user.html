@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание пользователя | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-teal);
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Главный заголовок */
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        /* Иконка создания пользователя */
+        .create-icon-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .create-icon-wrapper {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.25),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .create-icon-inner {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #ffffff, #f5f9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 32px;
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Карточки контента */
+        .content-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .content-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05) 0%, rgba(77, 139, 139, 0.05) 100%);
+            border-left: 4px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .info-card h5 i {
+            color: var(--accent-teal);
+        }
+
+        /* Форма создания пользователя */
+        .form-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(74, 111, 165, 0.1);
+            border: 2px solid rgba(74, 111, 165, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .form-card:hover {
+            border-color: rgba(74, 111, 165, 0.25);
+            box-shadow: 0 6px 25px rgba(74, 111, 165, 0.15);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+            z-index: 10;
+            font-size: 1.1rem;
+        }
+
+        .input-group-icon input,
+        .input-group-icon select {
+            padding-left: 45px;
+            border: 2px solid rgba(74, 111, 165, 0.2);
+            border-radius: 12px;
+            height: 48px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group-icon input:focus,
+        .input-group-icon select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+            background: white;
+            outline: none;
+        }
+
+        .form-text {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Кнопки */
+        .btn-primary-custom {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 111, 165, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+
+        /* Бейджи типов пользователей */
+        .user-type-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .teacher-badge {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            color: #7b1fa2;
+            border: 1px solid #d1c4e9;
+        }
+
+        .starosta-badge {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #388e3c;
+            border: 1px solid #c8e6c9;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+        }
+
+        .student-badge {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        /* Скрытые группы полей */
+        .field-group {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .field-group.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Валидация */
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Хлебные крошки */
+        .breadcrumb {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.15);
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.03) 0%, rgba(77, 139, 139, 0.03) 100%);
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        /* Футер */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer h6 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Alert сообщения */
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+
+        .alert-danger {
+            border-left-color: var(--danger-color);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .main-header {
+                padding: 30px 20px;
+            }
+
+            .content-card,
+            .form-card {
+                padding: 20px;
+            }
+
+            .create-icon-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+
+            .create-icon-inner {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+        }
+
+        /* Выбор типа пользователя - стилизация */
+        #user_type option {
+            padding: 10px;
+            font-weight: 500;
+        }
+
+        /* Контейнер для формы */
+        .form-container {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    {% if session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_create_user') }}">
+                            <i class="bi bi-person-plus me-1"></i>Создать пользователя
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: var(--gradient-primary); color: white;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <span class="text-muted">{{ session.username if session.username else 'Админ' }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="fade-in">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('users_list') }}">Пользователи</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Создание пользователя</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="main-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2 col-12 text-center mb-3 mb-md-0">
+                    <div class="create-icon-container">
+                        <div class="create-icon-wrapper">
+                            <div class="create-icon-inner">
+                                <i class="bi bi-person-plus-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-12">
+                    <h1 class="display-6 mb-2">👤 Создание нового пользователя</h1>
+                    <p class="lead mb-0">Только администратор может создавать преподавателей, старост и других администраторов. Студенты могут регистрироваться самостоятельно.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom alert-dismissible fade show mt-3 fade-in" role="alert">
+                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Информационная карточка -->
+        <div class="info-card fade-in delay-1">
+            <h5><i class="bi bi-info-circle"></i> Информация о типах пользователей</h5>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><span class="user-type-badge admin-badge">Администратор</span> Полный доступ ко всем функциям системы</p>
+                    <p class="mb-1"><span class="user-type-badge teacher-badge">Преподаватель</span> Доступ к учебным материалам и оценкам</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><span class="user-type-badge starosta-badge">Староста</span> Управление группой, отчетность</p>
+                    <p class="mb-1"><span class="user-type-badge student-badge">Студент</span> Доступ к учебным материалам</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <p class="mb-0"><i class="bi bi-asterisk text-danger"></i> Поля с * обязательны для заполнения</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма создания пользователя -->
+        <div class="form-container fade-in delay-2">
+            <form method="POST" action="{{ url_for('admin_create_user') }}" id="createUserForm" onsubmit="return validateForm()">
+                <!-- Основная информация -->
+                <div class="form-card">
+                    <h5 class="mb-4"><i class="bi bi-person-badge" style="color: var(--primary-blue);"></i> Основная информация</h5>
+
+                    <div class="row">
+                        <!-- Тип пользователя -->
+                        <div class="col-md-6 mb-4">
+                            <label for="user_type" class="form-label required">Тип пользователя</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-person-rolodex"></i>
+                                <select class="form-select" id="user_type" name="user_type" required onchange="toggleFields()">
+                                    <option value="">Выберите тип пользователя</option>
+                                    <option value="teacher">Преподаватель</option>
+                                    <option value="starosta">Староста</option>
+                                    <option value="admin">Администратор</option>
+                                    <option value="student">Студент</option>
+                                </select>
+                            </div>
+                            <div id="userTypeError" class="invalid-feedback"></div>
+                        </div>
+
+                        <!-- Логин -->
+                        <div class="col-md-6 mb-4">
+                            <label for="username" class="form-label required">Логин</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-person"></i>
+                                <input type="text" class="form-control" id="username" name="username" required
+                                       placeholder="Уникальный логин"
+                                       pattern="[A-Za-z0-9_]+"
+                                       title="Только латинские буквы, цифры и подчеркивание">
+                            </div>
+                            <div class="form-text">Только латинские буквы, цифры и подчеркивание</div>
+                            <div id="usernameError" class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Пароль -->
+                        <div class="col-md-6 mb-4">
+                            <label for="password" class="form-label required">Пароль</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-lock"></i>
+                                <input type="password" class="form-control" id="password" name="password" required
+                                       placeholder="Не менее 6 символов"
+                                       minlength="6">
+                            </div>
+                            <div class="form-text">Минимальная длина пароля - 6 символов</div>
+                            <div id="passwordError" class="invalid-feedback"></div>
+                        </div>
+
+                        <!-- Полное имя -->
+                        <div class="col-md-6 mb-4">
+                            <label for="full_name" class="form-label required">Полное имя</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-card-heading"></i>
+                                <input type="text" class="form-control" id="full_name" name="full_name" required
+                                       placeholder="Иванов Иван Иванович">
+                            </div>
+                            <div class="form-text">Формат: Фамилия Имя Отчество</div>
+                            <div id="fullNameError" class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Контактная информация -->
+                <div class="form-card">
+                    <h5 class="mb-4"><i class="bi bi-telephone" style="color: var(--accent-teal);"></i> Контактная информация</h5>
+
+                    <div class="row">
+                        <!-- Email -->
+                        <div class="col-md-6 mb-4">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-envelope"></i>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="example@mail.ru">
+                            </div>
+                        </div>
+
+                        <!-- Телефон -->
+                        <div class="col-md-6 mb-4">
+                            <label for="phone" class="form-label">Телефон</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-phone"></i>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                       placeholder="+7 (999) 123-45-67"
+                                       pattern="\+7\s?[\(]?\d{3}[\)]?\s?\d{3}[\-]?\d{2}[\-]?\d{2}"
+                                       title="Формат: +7 (999) 123-45-67">
+                            </div>
+                            <div class="form-text">Формат: +7 (999) 123-45-67</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Скрытое поле created_by -->
+                <input type="hidden" name="created_by" value="{{ session.username if session.username else 'admin' }}">
+
+                <!-- Поля для студентов/старост -->
+                <div id="studentFields" class="form-card field-group">
+                    <h5 class="mb-4"><i class="bi bi-mortarboard" style="color: var(--primary-blue);"></i> Учебная информация</h5>
+
+                    <div class="row">
+                        <!-- Группа -->
+                        <div class="col-md-6 mb-4">
+                            <label for="group" class="form-label">Группа</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-people"></i>
+                                <input type="text" class="form-control" id="group" name="group"
+                                       placeholder="ПИ-21"
+                                       pattern="[А-ЯЁ]{2,4}-\d{2,3}"
+                                       title="Формат: ПИ-21, ИВТ-202">
+                            </div>
+                            <div class="form-text">Формат: ПИ-21, ИВТ-202</div>
+                        </div>
+
+                        <!-- Курс -->
+                        <div class="col-md-6 mb-4">
+                            <label for="course" class="form-label">Курс</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-123"></i>
+                                <select class="form-select" id="course" name="course">
+                                    <option value="">Выберите курс</option>
+                                    {% for i in range(1, 7) %}
+                                        <option value="{{ i }}">{{ i }} курс</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Поля для преподавателей -->
+                <div id="teacherFields" class="form-card field-group">
+                    <h5 class="mb-4"><i class="bi bi-briefcase" style="color: var(--accent-teal);"></i> Рабочая информация</h5>
+
+                    <div class="row">
+                        <!-- Кафедра -->
+                        <div class="col-md-6 mb-4">
+                            <label for="department" class="form-label">Кафедра</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-building"></i>
+                                <input type="text" class="form-control" id="department" name="department"
+                                       placeholder="Программная инженерия">
+                            </div>
+                        </div>
+
+                        <!-- Должность -->
+                        <div class="col-md-6 mb-4">
+                            <label for="position" class="form-label">Должность</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-person-badge"></i>
+                                <input type="text" class="form-control" id="position" name="position"
+                                       placeholder="Преподаватель">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="bi bi-person-plus"></i> Создать пользователя
+                        </button>
+                        <a href="{{ url_for('users_list') }}" class="btn-secondary-custom">
+                            <i class="bi bi-arrow-left"></i> Назад к списку
+                        </a>
+                    </div>
+                    <div class="text-muted">
+                        <small>Создает: <strong>{{ session.username if session.username else 'admin' }}</strong></small>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6>Техникум - Система управления</h6>
+                    <p class="mb-0 text-muted">© 2025 Все права защищены</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: var(--gradient-primary);">
+                            <i class="bi bi-person text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                <strong>{{ session.username if session.username else 'admin' }}</strong><br>
+                                <small class="text-muted">Администратор</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleFields() {
+            const userType = document.getElementById('user_type').value;
+            const studentFields = document.getElementById('studentFields');
+            const teacherFields = document.getElementById('teacherFields');
+            const groupInput = document.getElementById('group');
+            const courseSelect = document.getElementById('course');
+
+            // Скрываем все поля
+            studentFields.classList.remove('active');
+            teacherFields.classList.remove('active');
+
+            // Сбрасываем обязательность полей
+            if (groupInput) groupInput.required = false;
+            if (courseSelect) courseSelect.required = false;
+
+            // Показываем нужные поля
+            if (userType === 'student' || userType === 'starosta') {
+                studentFields.classList.add('active');
+                // Делаем поля обязательными для старост
+                if (userType === 'starosta') {
+                    groupInput.required = true;
+                    courseSelect.required = true;
+                }
+            } else if (userType === 'teacher') {
+                teacherFields.classList.add('active');
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const userType = document.getElementById('user_type').value;
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+
+            // Проверка типа пользователя
+            if (!userType) {
+                const userTypeSelect = document.getElementById('user_type');
+                userTypeSelect.classList.add('is-invalid');
+                document.getElementById('userTypeError').textContent = 'Выберите тип пользователя';
+                isValid = false;
+            }
+
+            // Проверка логина
+            const username = document.getElementById('username').value;
+            if (!username.match(/^[A-Za-z0-9_]+$/)) {
+                const usernameInput = document.getElementById('username');
+                usernameInput.classList.add('is-invalid');
+                document.getElementById('usernameError').textContent = 'Только латинские буквы, цифры и подчеркивание';
+                isValid = false;
+            }
+
+            // Проверка пароля
+            const password = document.getElementById('password').value;
+            if (password.length < 6) {
+                const passwordInput = document.getElementById('password');
+                passwordInput.classList.add('is-invalid');
+                document.getElementById('passwordError').textContent = 'Не менее 6 символов';
+                isValid = false;
+            }
+
+            // Проверка имени
+            const fullName = document.getElementById('full_name').value;
+            if (!fullName.trim()) {
+                const fullNameInput = document.getElementById('full_name');
+                fullNameInput.classList.add('is-invalid');
+                document.getElementById('fullNameError').textContent = 'Введите полное имя';
+                isValid = false;
+            }
+
+            // Дополнительные проверки для старост
+            if (userType === 'starosta') {
+                const group = document.getElementById('group').value;
+                const course = document.getElementById('course').value;
+
+                if (!group) {
+                    const groupInput = document.getElementById('group');
+                    groupInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                if (!course) {
+                    const courseSelect = document.getElementById('course');
+                    courseSelect.classList.add('is-invalid');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                // Прокручиваем к первой ошибке
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            return isValid;
+        }
+
+        // Автоматическое скрытие flash сообщений
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            toggleFields();
+
+            // Анимация появления
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
+                                         el.classList.contains('delay-2') ? '0.2s' : '0s';
+            });
+        });
+
+        // Валидация в реальном времени
+        document.getElementById('username').addEventListener('blur', function() {
+            if (!this.value.match(/^[A-Za-z0-9_]+$/)) {
+                this.classList.add('is-invalid');
+                document.getElementById('usernameError').textContent = 'Только латинские буквы, цифры и подчеркивание';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('password').addEventListener('blur', function() {
+            if (this.value.length < 6) {
+                this.classList.add('is-invalid');
+                document.getElementById('passwordError').textContent = 'Не менее 6 символов';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        document.getElementById('full_name').addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+                document.getElementById('fullNameError').textContent = 'Введите полное имя';
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    </script>
+</body>
+</html>

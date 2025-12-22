@@ -1,0 +1,317 @@
+<!-- templates/set_curator.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка куратора | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding-top: 80px;
+        }
+
+        .curator-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.1);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-curator {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #388e3c;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-not-curator {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #f57c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        .form-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(248, 249, 250, 0.7);
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-teal);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--secondary-blue);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: #f57c00;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .btn-warning-custom:hover {
+            background: #e65100;
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .btn-danger-custom:hover {
+            background: #c82333;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: rgba(77, 139, 139, 0.1);
+            border-left: 4px solid var(--accent-teal);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.08);">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-primary btn-sm me-2">
+                    <i class="bi bi-arrow-left me-1"></i>Назад
+                </a>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                             style="width: 36px; height: 36px; background: var(--primary-blue); color: white;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <span class="text-muted">{{ session.name }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="bi bi-person me-2"></i>Профиль</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <div class="curator-card">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                     style="width: 80px; height: 80px; background: var(--accent-teal); color: white; font-size: 32px;">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <h2 class="mb-2">Настройка куратора</h2>
+                <p class="text-muted">Управление статусом куратора и группой кураторства</p>
+
+                <!-- Отображение текущего статуса -->
+                <div class="d-flex justify-content-center mb-4">
+                    {% if user.is_curator and user.curator_group %}
+                    <span class="status-badge status-curator">
+                        <i class="bi bi-person-badge"></i>
+                        Куратор группы {{ user.curator_group }}
+                    </span>
+                    {% else %}
+                    <span class="status-badge status-not-curator">
+                        <i class="bi bi-person"></i>
+                        Не являетесь куратором
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Информация для текущего куратора -->
+            {% if user.is_curator and user.curator_group %}
+            <div class="info-box">
+                <h5><i class="bi bi-info-circle me-2"></i>Текущий статус куратора</h5>
+                <p class="mb-0">
+                    Вы являетесь куратором группы <strong>{{ user.curator_group }}</strong>.
+                    Вы можете сменить группу кураторства или полностью удалить статус куратора.
+                </p>
+            </div>
+
+            <!-- Форма для смены группы куратора -->
+            <div class="form-section">
+                <h4><i class="bi bi-arrow-left-right me-2"></i>Сменить группу куратора</h4>
+                <p class="text-muted mb-3">
+                    Если вы стали куратором другой группы, введите название новой группы ниже.
+                </p>
+
+                <form method="POST" action="{{ url_for('set_curator') }}">
+                    <input type="hidden" name="action" value="change">
+
+                    <div class="mb-3">
+                        <label for="new_group_name" class="form-label">Новая группа для кураторства</label>
+                        <input type="text"
+                               class="form-control"
+                               id="new_group_name"
+                               name="new_group_name"
+                               placeholder="Например: ИСП-21"
+                               required>
+                        <div class="form-text">
+                            Введите точное название группы, которую вы хотите курировать.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning-custom">
+                        <i class="bi bi-arrow-left-right me-2"></i>Сменить группу куратора
+                    </button>
+                </form>
+            </div>
+
+            <!-- Форма для удаления статуса куратора -->
+            <div class="form-section">
+                <h4><i class="bi bi-person-x me-2"></i>Удалить статус куратора</h4>
+                <p class="text-muted mb-3">
+                    Если вы больше не являетесь куратором, вы можете удалить этот статус.
+                </p>
+
+                <form method="POST" action="{{ url_for('set_curator') }}" onsubmit="return confirm('Вы уверены, что хотите удалить статус куратора?');">
+                    <input type="hidden" name="action" value="remove">
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Внимание: после удаления статуса куратора вы потеряете доступ к панели куратора.
+                    </div>
+
+                    <button type="submit" class="btn btn-danger-custom">
+                        <i class="bi bi-person-x me-2"></i>Удалить статус куратора
+                    </button>
+                </form>
+            </div>
+
+            {% else %}
+            <!-- Форма для становления куратором -->
+            <div class="form-section">
+                <h4><i class="bi bi-person-plus me-2"></i>Стать куратором</h4>
+                <p class="text-muted mb-3">
+                    Если вас назначили куратором группы, введите название группы ниже.
+                </p>
+
+                <form method="POST" action="{{ url_for('set_curator') }}">
+                    <input type="hidden" name="action" value="set">
+
+                    <div class="mb-3">
+                        <label for="group_name" class="form-label">Группа для кураторства</label>
+                        <input type="text"
+                               class="form-control"
+                               id="group_name"
+                               name="group_name"
+                               placeholder="Например: ИСП-21"
+                               required>
+                        <div class="form-text">
+                            Введите точное название группы, которую вы будете курировать.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-person-plus me-2"></i>Стать куратором
+                    </button>
+                </form>
+            </div>
+
+            <!-- Информация о функциях куратора -->
+            <div class="info-box">
+                <h5><i class="bi bi-lightbulb me-2"></i>Что дает статус куратора?</h5>
+                <ul class="mb-0">
+                    <li>Доступ к панели куратора для группы</li>
+                    <li>Просмотр списка студентов группы</li>
+                    <li>Загрузка и просмотр отчетов по группе</li>
+                    <li>Управление учебной информацией группы</li>
+                    <li>Общение со студентами группы</li>
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Кнопки действий -->
+            <div class="action-buttons">
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Вернуться в профиль
+                </a>
+
+                {% if user.is_curator and user.curator_group %}
+                <a href="{{ url_for('starosta') }}" class="btn btn-success">
+                    <i class="bi bi-people me-2"></i>Перейти в панель куратора
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Автоматическое скрытие flash сообщений
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
