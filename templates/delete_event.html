@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удалить мероприятие | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --danger-color: #dc3545;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+        }
+
+        .event-card.selected {
+            border-color: var(--danger-color);
+            background: rgba(220, 53, 69, 0.05);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 1px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('meropriyatiya') }}">
+                            <i class="bi bi-calendar-event me-1"></i>Мероприятия
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: var(--gradient-primary); color: white;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <span class="text-muted">{{ session.name }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb" style="background: white; border-radius: 12px; padding: 15px; box-shadow: var(--card-shadow);">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('meropriyatiya') }}">Мероприятия</a></li>
+                <li class="breadcrumb-item active">Удалить мероприятие</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="main-header">
+            <h1 class="display-6 mb-2">🗑️ Удалить мероприятие</h1>
+            <p class="lead mb-0">Выберите мероприятие для удаления из системы</p>
+        </div>
+
+        <!-- Предупреждение -->
+        <div class="warning-box">
+            <h4 style="color: #856404;">
+                <i class="bi bi-exclamation-triangle me-2"></i>Внимание!
+            </h4>
+            <p class="mb-0">
+                Удаление мероприятия невозможно отменить. После удаления все данные о мероприятии будут безвозвратно утеряны.
+                Убедитесь, что выбрали правильное мероприятие.
+            </p>
+        </div>
+
+        <!-- Форма удаления -->
+        <div class="content-card">
+            <form method="POST" action="{{ url_for('delete_event') }}" id="deleteForm">
+                {% if events %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" style="color: var(--primary-blue);">
+                            <i class="bi bi-list-ul me-2"></i>Выберите мероприятие для удаления:
+                        </label>
+
+                        <div id="eventsList">
+                            {% for event in events %}
+                                <div class="event-card" onclick="selectEvent({{ event.id }})" id="event-{{ event.id }}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event_id"
+                                               id="event_{{ event.id }}" value="{{ event.id }}" required>
+                                        <label class="form-check-label w-100" for="event_{{ event.id }}">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                                    <div class="text-muted">
+                                                        <i class="bi bi-calendar-date me-1"></i>{{ event.date }}
+                                                        <i class="bi bi-clock ms-3 me-1"></i>{{ event.time }}
+                                                    </div>
+                                                    <div>
+                                                        <i class="bi bi-geo-alt me-1"></i>{{ event.location }}
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge {% if event.status == 'Запланировано' %}bg-primary{% elif event.status == 'Завершено' %}bg-success{% else %}bg-secondary{% endif %}">
+                                                        {{ event.status }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x" style="font-size: 64px; color: #ccc;"></i>
+                        <h4 class="mt-3">Нет мероприятий для удаления</h4>
+                        <p class="text-muted">Все мероприятия уже удалены или их не существует</p>
+                        <a href="{{ url_for('meropriyatiya') }}" class="btn btn-primary mt-3">
+                            <i class="bi bi-arrow-left me-2"></i>Вернуться к мероприятиям
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if events %}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('meropriyatiya') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                            <i class="bi bi-trash me-2"></i>Удалить выбранное мероприятие
+                        </button>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let selectedEventId = null;
+
+        function selectEvent(eventId) {
+            // Снимаем выделение со всех карточек
+            document.querySelectorAll('.event-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Выделяем выбранную карточку
+            const selectedCard = document.getElementById(`event-${eventId}`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            // Активируем радиокнопку
+            const radioBtn = document.getElementById(`event_${eventId}`);
+            if (radioBtn) {
+                radioBtn.checked = true;
+                selectedEventId = eventId;
+
+                // Активируем кнопку удаления
+                const deleteBtn = document.getElementById('deleteBtn');
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                }
+            }
+        }
+
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            if (!selectedEventId) {
+                e.preventDefault();
+                alert('Пожалуйста, выберите мероприятие для удаления');
+                return false;
+            }
+
+            const eventTitle = document.querySelector(`#event_${selectedEventId}`).parentElement.querySelector('h5').textContent;
+            const confirmation = confirm(`Вы уверены, что хотите удалить мероприятие "${eventTitle}"?\n\nЭто действие невозможно отменить!`);
+
+            if (!confirmation) {
+                e.preventDefault();
+                return false;
+            }
+
+            return true;
+        });
+
+        // Автоматически выбираем первое мероприятие
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstRadio = document.querySelector('input[name="event_id"]');
+            if (firstRadio) {
+                const firstEventId = firstRadio.value;
+                selectEvent(firstEventId);
+            }
+        });
+    </script>
+</body>
+</html>

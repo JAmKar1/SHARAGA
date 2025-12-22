@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мероприятия | Техникум</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #4a6fa5;
+            --secondary-blue: #3a5885;
+            --accent-teal: #4d8b8b;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --card-shadow: 0 8px 30px rgba(74, 111, 165, 0.08);
+            --hover-shadow: 0 15px 35px rgba(74, 111, 165, 0.12);
+            --gradient-primary: linear-gradient(135deg, #4a6fa5, #3a5885);
+            --gradient-accent: linear-gradient(135deg, #4d8b8b, #3d6d6d);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.4rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-teal);
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Главный заголовок */
+        .main-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 111, 165, 0.2);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        /* Иконка мероприятий */
+        .events-icon-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .events-icon-wrapper {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.25),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .events-icon-inner {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #ffffff, #f5f9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 32px;
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Карточки контента */
+        .content-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .content-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Карточки мероприятий */
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--hover-shadow);
+            border-color: transparent;
+        }
+
+        .event-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Заголовок мероприятия */
+        .event-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(74, 111, 165, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .event-date {
+            color: var(--accent-teal);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .event-date i {
+            font-size: 1.1rem;
+        }
+
+        .event-location {
+            color: var(--light-text);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .event-location i {
+            font-size: 1.1rem;
+        }
+
+        /* Описание мероприятия */
+        .event-description {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: var(--dark-text);
+            line-height: 1.6;
+            flex: 1;
+            opacity: 0.9;
+        }
+
+        /* Детали мероприятия */
+        .event-details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(74, 111, 165, 0.1);
+            font-size: 0.85rem;
+            color: var(--light-text);
+        }
+
+        .event-details p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-details i {
+            width: 20px;
+            color: var(--primary-blue);
+        }
+
+        /* Бейджи статусов */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-upcoming {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #388e3c;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-ongoing {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Бейджи категорий */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .category-academic {
+            background: rgba(74, 111, 165, 0.1);
+            color: var(--primary-blue);
+            border: 1px solid rgba(74, 111, 165, 0.2);
+        }
+
+        .category-cultural {
+            background: rgba(77, 139, 139, 0.1);
+            color: var(--accent-teal);
+            border: 1px solid rgba(77, 139, 139, 0.2);
+        }
+
+        .category-sports {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ff9800;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .category-other {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
+        /* Фильтры */
+        .filter-container {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(74, 111, 165, 0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(74, 111, 165, 0.05);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(74, 111, 165, 0.1);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Кнопки управления мероприятиями */
+        .event-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(74, 111, 165, 0.1);
+        }
+
+        .btn-group-sm .btn {
+            padding: 5px 12px;
+            font-size: 0.875rem;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-outline-danger:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Кнопка добавления */
+        .btn-add-event {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-event:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 111, 165, 0.3);
+        }
+
+        /* Кнопка "Мои мероприятия" */
+        .btn-my-events {
+            border: 2px solid var(--primary-blue);
+            background: transparent;
+            color: var(--primary-blue);
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-my-events:hover {
+            background: rgba(74, 111, 165, 0.1);
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--light-text);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px dashed rgba(74, 111, 165, 0.2);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: rgba(74, 111, 165, 0.3);
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            color: var(--dark-text);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            max-width: 500px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        /* Сетка мероприятий */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .events-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                justify-content: center;
+            }
+
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Хлебные крошки */
+        .breadcrumb {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 111, 165, 0.15);
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.03) 0%, rgba(77, 139, 139, 0.03) 100%);
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        /* Футер */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer h6 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Alert сообщения */
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+
+        .alert-danger {
+            border-left-color: var(--danger-color);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        }
+
+        .alert-info {
+            border-left-color: var(--info-color);
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Статистика */
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(74, 111, 165, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+
+        /* Информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05) 0%, rgba(77, 139, 139, 0.05) 100%);
+            border-left: 4px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .info-card h5 i {
+            color: var(--accent-teal);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .main-header {
+                padding: 30px 20px;
+            }
+
+            .content-card,
+            .filter-container {
+                padding: 20px;
+            }
+
+            .events-icon-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+
+            .events-icon-inner {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+
+            .filters {
+                overflow-x: auto;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+
+            .event-card {
+                padding: 20px;
+            }
+
+            .btn-add-event,
+            .btn-my-events {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-card {
+                padding: 15px;
+            }
+
+            .event-card {
+                padding: 15px;
+            }
+
+            .events-grid {
+                gap: 15px;
+            }
+        }
+
+        /* Счетчик мероприятий */
+        .events-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 15px;
+            background: rgba(74, 111, 165, 0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.05) 0%, rgba(77, 139, 139, 0.05) 100%);
+            border-left: 4px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(77, 139, 139, 0.1);
+        }
+
+        .info-card h5 i {
+            color: var(--accent-teal);
+        }
+
+        /* Регистрация на мероприятие */
+        .btn-register {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-register:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="bi bi-building me-2"></i>Техникум
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-calendar-event me-1"></i>Мероприятия
+                        </a>
+                    </li>
+                    {% if session.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users_list') }}">
+                            <i class="bi bi-people me-1"></i>Пользователи
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; background: var(--gradient-primary); color: white;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <span class="text-muted">{{ session.name }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="bi bi-person me-2"></i>Профиль
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="fade-in">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Мероприятия и события</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="main-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2 col-12 text-center mb-3 mb-md-0">
+                    <div class="events-icon-container">
+                        <div class="events-icon-wrapper">
+                            <div class="events-icon-inner">
+                                <i class="bi bi-calendar-event-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-12">
+                    <h1 class="display-6 mb-2">🎉 Мероприятия и события</h1>
+                    <p class="lead mb-0">Актуальные мероприятия, конкурсы и события техникума. Будьте в курсе всех важных событий!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom alert-dismissible fade show mt-3 fade-in" role="alert">
+                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Статистика -->
+        <div class="row mb-4 fade-in delay-1">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ events|length if events else 0 }}</div>
+                    <div class="stats-label">Всего мероприятий</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        {{ events|selectattr('status', 'equalto', 'Предстоящее')|list|length if events else 0 }}
+                    </div>
+                    <div class="stats-label">Предстоящие</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        {{ events|selectattr('status', 'equalto', 'Текущее')|list|length if events else 0 }}
+                    </div>
+                    <div class="stats-label">Текущие</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        {{ events|selectattr('status', 'equalto', 'Завершено')|list|length if events else 0 }}
+                    </div>
+                    <div class="stats-label">Завершённые</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filter-container fade-in delay-1">
+            <h5 class="mb-4">
+                <i class="bi bi-funnel" style="color: var(--primary-blue);"></i>
+                Фильтр мероприятий
+                <span class="events-counter">
+                    <i class="bi bi-calendar3"></i> {{ events|length if events else 0 }}
+                </span>
+            </h5>
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterEvents('all')">
+                    <i class="bi bi-grid"></i> Все мероприятия
+                </button>
+                <button class="filter-btn" onclick="filterEvents('upcoming')">
+                    <i class="bi bi-clock"></i> Предстоящие
+                </button>
+                <button class="filter-btn" onclick="filterEvents('ongoing')">
+                    <i class="bi bi-play-circle"></i> Текущие
+                </button>
+                <button class="filter-btn" onclick="filterEvents('academic')">
+                    <i class="bi bi-book"></i> Учебные
+                </button>
+                <button class="filter-btn" onclick="filterEvents('cultural')">
+                    <i class="bi bi-palette"></i> Культурные
+                </button>
+                <button class="filter-btn" onclick="filterEvents('sports')">
+                    <i class="bi bi-trophy"></i> Спортивные
+                </button>
+                <button class="filter-btn" onclick="filterEvents('completed')">
+                    <i class="bi bi-check-circle"></i> Завершённые
+                </button>
+            </div>
+        </div>
+
+        <!-- Список мероприятий -->
+        <div class="content-card fade-in delay-2">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 style="color: var(--primary-blue);">
+                    <i class="bi bi-calendar-week"></i>
+                    Список мероприятий
+                </h5>
+                <div class="d-flex align-items-center gap-3">
+                    {% if can_edit %}
+                    <div class="btn-group">
+                        <a href="{{ url_for('add_event') }}" class="btn btn-add-event me-2">
+                            <i class="bi bi-plus-circle me-1"></i>Добавить мероприятие
+                        </a>
+                        <a href="{{ url_for('my_events') }}" class="btn btn-my-events">
+                            <i class="bi bi-list-check me-1"></i>Мои мероприятия
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="text-muted" style="font-size: 0.9rem;">
+                        Показано: <span id="eventsCount">{{ events|length if events else 0 }}</span> из {{ events|length if events else 0 }}
+                    </div>
+                </div>
+            </div>
+
+            {% if events %}
+            <div class="events-grid" id="eventsGrid">
+                {% for event in events %}
+                <div class="event-card" data-category="{{ event.category|default('other') }}" data-status="{{ event.status|default('upcoming') }}">
+                    <div class="event-header">
+                        <div class="event-title">
+                            <span>{{ event.title }}</span>
+                            {% if event.status == 'Предстоящее' or event.status == 'Запланировано' %}
+                            <span class="status-badge status-upcoming">
+                                <i class="bi bi-clock"></i> {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Текущее' %}
+                            <span class="status-badge status-ongoing">
+                                <i class="bi bi-play-circle"></i> {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Завершено' %}
+                            <span class="status-badge status-completed">
+                                <i class="bi bi-check-circle"></i> {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Отменено' %}
+                            <span class="status-badge status-cancelled">
+                                <i class="bi bi-x-circle"></i> {{ event.status }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="event-date">
+                            <i class="bi bi-calendar-date"></i>
+                            <span>{{ event.date }} в {{ event.time }}</span>
+                        </div>
+
+                        <div class="event-location">
+                            <i class="bi bi-geo-alt"></i>
+                            <span>{{ event.location }}</span>
+                        </div>
+
+                        <div class="mt-3">
+                            {% if event.category == 'Учебное' or event.category == 'Научное' %}
+                            <span class="category-badge category-academic">{{ event.category }}</span>
+                            {% elif event.category == 'Культурное' %}
+                            <span class="category-badge category-cultural">{{ event.category }}</span>
+                            {% elif event.category == 'Спортивное' %}
+                            <span class="category-badge category-sports">{{ event.category }}</span>
+                            {% else %}
+                            <span class="category-badge category-other">{{ event.category|default('Общее') }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="event-description">
+                        {{ event.description|truncate(150) }}
+                        {% if event.description|length > 150 %}
+                        <span class="text-primary" style="cursor: pointer;" onclick="showFullDescription(this)">... читать дальше</span>
+                        <span class="full-description" style="display: none;">{{ event.description }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="event-details">
+                        <p>
+                            <i class="bi bi-person-badge"></i>
+                            <span><strong>Организатор:</strong> {{ event.organizer }}</span>
+                        </p>
+                        <p>
+                            <i class="bi bi-clock-history"></i>
+                            <span><strong>Продолжительность:</strong> {{ event.duration|default('2 часа') }}</span>
+                        </p>
+                        {% if event.max_participants %}
+                        <p>
+                            <i class="bi bi-people"></i>
+                            <span><strong>Макс. участников:</strong> {{ event.max_participants }}</span>
+                        </p>
+                        {% endif %}
+                        {% if event.requirements %}
+                        <p>
+                            <i class="bi bi-list-check"></i>
+                            <span><strong>Требования:</strong> {{ event.requirements|truncate(50) }}</span>
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Кнопки управления мероприятием -->
+                    {% if can_edit and (session.user_type == 'admin' or event.created_by == current_user_id) %}
+                    <div class="event-actions">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person-circle me-1"></i>Создал: {{ event.created_by_name }}
+                            </small>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ url_for('edit_event', event_id=event.id) }}"
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </a>
+                                <form method="POST" action="{{ url_for('delete_event', event_id=event.id) }}"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Удалить мероприятие «{{ event.title }}»?');">
+                                    <button type="submit" class="btn btn-outline-danger ms-2">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Кнопка регистрации на мероприятие -->
+                    {% if session.user_type == 'student' and event.status in ['Предстоящее', 'Запланировано', 'Текущее'] %}
+                    <div class="event-actions mt-3">
+                        <form method="POST" action="{{ url_for('register_for_event', event_id=event.id) }}">
+                            <button type="submit" class="btn btn-register w-100">
+                                <i class="bi bi-person-plus me-2"></i>Зарегистрироваться на мероприятие
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <h3>Мероприятий пока нет</h3>
+                <p>Новые мероприятия появятся здесь в ближайшее время. Следите за обновлениями!</p>
+                {% if can_edit %}
+                <div class="mt-4">
+                    <a href="{{ url_for('add_event') }}" class="btn btn-add-event">
+                        <i class="bi bi-plus-circle me-2"></i>Создать первое мероприятие
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Информационная карточка -->
+        <div class="info-card fade-in">
+            <h5>
+                <i class="bi bi-info-circle"></i>
+                Информация о мероприятиях
+            </h5>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-check-circle text-success"></i> <strong>Всего мероприятий:</strong> {{ events|length if events else 0 }}</p>
+                    <p class="mb-2"><i class="bi bi-person-check text-primary"></i> <strong>Ваш статус:</strong>
+                        {% if session.user_type == 'admin' %}
+                        Администратор
+                        {% elif session.user_type == 'teacher' %}
+                        Преподаватель
+                        {% elif session.user_type == 'student' %}
+                        Студент
+                        {% elif session.user_type == 'starosta' %}
+                        Староста
+                        {% endif %}
+                    </p>
+                    <p class="mb-2"><i class="bi bi-calendar-check text-info"></i> <strong>Активных мероприятий:</strong>
+                        {% if events %}
+                            {{ events|selectattr('status', 'equalto', 'Текущее')|list|length +
+                               events|selectattr('status', 'equalto', 'Предстоящее')|list|length +
+                               events|selectattr('status', 'equalto', 'Запланировано')|list|length }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-lightbulb text-warning"></i> Используйте фильтры для поиска нужных мероприятий</p>
+                    <p class="mb-2"><i class="bi bi-bell text-primary"></i> Следите за обновлениями событий</p>
+                    {% if can_edit %}
+                    <p class="mb-0"><i class="bi bi-plus-circle text-success"></i> Вы можете добавлять и редактировать мероприятия</p>
+                    {% else %}
+                    <p class="mb-0"><i class="bi bi-person-plus text-success"></i> Для участия обращайтесь к организаторам</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="mt-4" style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 10px; border-left: 3px solid var(--accent-teal);">
+                <p class="mb-0">
+                    <i class="bi bi-lightbulb-fill" style="color: var(--accent-teal);"></i>
+                    <strong>Совет:</strong> Регулярно проверяйте этот раздел, чтобы быть в курсе всех событий техникума.
+                    {% if can_edit %}
+                    Для добавления мероприятия используйте кнопку "Добавить мероприятие" выше.
+                    {% else %}
+                    Для участия в мероприятиях обращайтесь к организаторам или старосте группы.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6>Техникум - Система мероприятий</h6>
+                    <p class="mb-0 text-muted">© 2025 Все права защищены</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 40px; height: 40px; background: var(--gradient-primary);">
+                            <i class="bi bi-calendar-event text-white"></i>
+                        </div>
+                        <div class="text-start">
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                <strong>{{ session.name }}</strong><br>
+                                <small class="text-muted">
+                                    {% if can_edit %}
+                                    Управление мероприятиями
+                                    {% else %}
+                                    Просмотр мероприятий
+                                    {% endif %}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Фильтрация мероприятий
+        function filterEvents(filter) {
+            const eventCards = document.querySelectorAll('.event-card');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            let visibleCount = 0;
+
+            // Обновляем активную кнопку
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(filter) ||
+                    (filter === 'all' && btn.textContent.includes('Все мероприятия'))) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Показываем/скрываем карточки
+            eventCards.forEach(card => {
+                const category = card.dataset.category;
+                const status = card.dataset.status;
+                let shouldShow = false;
+
+                if (filter === 'all') {
+                    shouldShow = true;
+                } else if (filter === 'upcoming') {
+                    shouldShow = status === 'Предстоящее' || status === 'Запланировано' || card.querySelector('.status-upcoming');
+                } else if (filter === 'ongoing') {
+                    shouldShow = status === 'Текущее' || card.querySelector('.status-ongoing');
+                } else if (filter === 'completed') {
+                    shouldShow = status === 'Завершено' || card.querySelector('.status-completed');
+                } else if (filter === 'academic') {
+                    shouldShow = category === 'Учебное' || category === 'academic' || category === 'Научное';
+                } else if (filter === 'cultural') {
+                    shouldShow = category === 'Культурное' || category === 'cultural';
+                } else if (filter === 'sports') {
+                    shouldShow = category === 'Спортивное' || category === 'sports';
+                } else {
+                    shouldShow = category === filter;
+                }
+
+                if (shouldShow) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+
+                    // Анимация появления
+                    card.style.animation = 'fadeInUp 0.5s ease forwards';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Обновляем счетчик
+            document.getElementById('eventsCount').textContent = visibleCount;
+
+            // Если нет видимых карточек, показываем сообщение
+            if (visibleCount === 0) {
+                showNoResultsMessage();
+            } else {
+                hideNoResultsMessage();
+            }
+        }
+
+        // Показать сообщение об отсутствии результатов
+        function showNoResultsMessage() {
+            let noResults = document.getElementById('noResultsMessage');
+            if (!noResults) {
+                noResults = document.createElement('div');
+                noResults.id = 'noResultsMessage';
+                noResults.className = 'empty-state';
+                noResults.innerHTML = `
+                    <div class="empty-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h3>Мероприятия не найдены</h3>
+                    <p>Попробуйте изменить параметры фильтрации</p>
+                `;
+                document.getElementById('eventsGrid').appendChild(noResults);
+            }
+        }
+
+        // Скрыть сообщение об отсутствии результатов
+        function hideNoResultsMessage() {
+            const noResults = document.getElementById('noResultsMessage');
+            if (noResults) {
+                noResults.remove();
+            }
+        }
+
+        // Показать полное описание
+        function showFullDescription(element) {
+            const fullDesc = element.nextElementSibling;
+            const shortDesc = element.previousSibling;
+
+            if (fullDesc.style.display === 'none') {
+                fullDesc.style.display = 'inline';
+                element.textContent = ' ... свернуть';
+                if (shortDesc.nodeType === 3) { // Text node
+                    shortDesc.textContent = shortDesc.textContent;
+                }
+            } else {
+                fullDesc.style.display = 'none';
+                element.textContent = ' ... читать дальше';
+            }
+        }
+
+        // Автоматическое скрытие flash сообщений
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            // Анимация появления
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = el.classList.contains('delay-1') ? '0.1s' :
+                                         el.classList.contains('delay-2') ? '0.2s' : '0s';
+            });
+
+            // Инициализация счетчика
+            const eventCards = document.querySelectorAll('.event-card');
+            document.getElementById('eventsCount').textContent = eventCards.length;
+
+            // Форматирование даты для лучшего отображения
+            const dateElements = document.querySelectorAll('.event-date span');
+            dateElements.forEach(el => {
+                const dateText = el.textContent;
+                // Преобразуем формат даты если нужно
+                if (dateText.includes('-')) {
+                    const parts = dateText.split(' ');
+                    if (parts[0].includes('-')) {
+                        const [year, month, day] = parts[0].split('-');
+                        el.textContent = `${day}.${month}.${year} в ${parts[2] || ''}`;
+                    }
+                }
+            });
+        });
+
+        // Поиск мероприятий (расширенная функция)
+        function searchEvents() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            const query = searchInput.value.toLowerCase().trim();
+            const eventCards = document.querySelectorAll('.event-card');
+            let visibleCount = 0;
+
+            eventCards.forEach(card => {
+                const title = card.querySelector('.event-title span').textContent.toLowerCase();
+                const description = card.querySelector('.event-description').textContent.toLowerCase();
+                const location = card.querySelector('.event-location span').textContent.toLowerCase();
+                const organizer = card.querySelector('.event-details p:nth-child(1) span').textContent.toLowerCase();
+
+                if (title.includes(query) || description.includes(query) ||
+                    location.includes(query) || organizer.includes(query)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('eventsCount').textContent = visibleCount;
+
+            if (visibleCount === 0) {
+                showNoResultsMessage();
+            } else {
+                hideNoResultsMessage();
+            }
+        }
+
+        // Добавляем обработчик нажатия Enter в поле поиска
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('searchInput')) {
+                searchEvents();
+            }
+        });
+
+        // Добавляем поле поиска динамически
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterContainer = document.querySelector('.filter-container');
+            if (filterContainer) {
+                const searchHtml = `
+                    <div class="mt-4">
+                        <div class="input-group">
+                            <span class="input-group-text" style="border-radius: 12px 0 0 12px; border: 2px solid rgba(74, 111, 165, 0.2);">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="searchInput"
+                                   placeholder="Поиск по названию, месту, организатору..."
+                                   style="border-radius: 0 12px 12px 0; border: 2px solid rgba(74, 111, 165, 0.2); border-left: none;">
+                            <button class="btn btn-outline-primary" type="button" onclick="searchEvents()"
+                                    style="border-radius: 0 12px 12px 0; margin-left: -1px;">
+                                Найти
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Вставляем поиск после фильтров
+                const filtersDiv = filterContainer.querySelector('.filters');
+                if (filtersDiv) {
+                    filtersDiv.insertAdjacentHTML('afterend', searchHtml);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
